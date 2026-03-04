@@ -1,16 +1,21 @@
-# React + Vite
+# 🚀 C# & SQL Comprehensive Cheatsheet
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, fast, and interactive web-based cheatsheet designed for developers to quickly reference core concepts in C# and SQL. Built with React and Vite for a lightning-fast user experience.
 
-Currently, two official plugins are available:
+## ✨ Features
+- **C# Basics to Advanced:** Covering syntax, OOP, LINQ, and asynchronous programming.
+- **SQL Reference:** Essential queries, joins, indexing, and best practices.
+- **Searchable Interface:** Find the snippet you need in seconds.
+- **Responsive Design:** Optimized for both desktop and mobile viewing.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Tech Stack
+- **Frontend:** React.js
+- **Build Tool:** Vite
+- **Styling:** [Add your styling here, e.g., Tailwind CSS or CSS Modules]
+- **Deployment:** [Add your deployment link here once you upload it!]
 
-## React Compiler
+## 📦 Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. **Clone the repo:**
+   ```bash
+   git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
