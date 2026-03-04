@@ -1,0 +1,46 @@
+/* Reset and base styles */
+/* Minimal, conflict-free base used by the App styles */
+
+/* Box sizing */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+:root{
+  --bg: #071028;
+  --panel: #0f1724;
+  --muted: #94a3b8;
+  --border: rgba(255,255,255,0.04);
+  --accent: #6366f1;
+  --text: #e6edf3;
+  --code-bg: #071826;
+  --radius: 10px;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+html { background: var(--bg); }
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+  min-width: 320px;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Links */
+a{ color: var(--accent); text-decoration: none }
+a:hover{ text-decoration: underline }
+
+/* Headings */
+h1,h2,h3,h4{ margin:0; font-weight:600 }
+
+/* Buttons - basic reset to avoid surprises */
+button{ font-family:inherit; font-size:14px }
+
+/* Utility */
+.container{ max-width:1200px; margin:0 auto; padding:16px }
+
+/* Make sure App.css rules take precedence but avoid !important wars */
+
