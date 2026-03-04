@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 const csharpTopics = [
@@ -1331,6 +1331,2129 @@ COMMIT;`
         }
       }
     ]
+  },
+  {
+    id: "db-design",
+    title: { en: "DB Design & Normalization", ka: "მონაცემთა ბაზის დაპროექტება და ნორმალიზაცია" },
+    sections: [
+      {
+        title: { en: "Database Design Principles", ka: "მონაცემთა ბაზის დიზაინის პრინციპები" },
+        code: {
+          en: `-- Good: Normalized design
+CREATE TABLE Departments (
+  DepartmentID INT PRIMARY KEY,
+  DepartmentName NVARCHAR(100) NOT NULL,
+  Budget DECIMAL(12, 2)
+);
+
+CREATE TABLE Employees (
+  EmployeeID INT PRIMARY KEY,
+  FirstName NVARCHAR(50),
+  LastName NVARCHAR(50),
+  DepartmentID INT NOT NULL,
+  HireDate DATE,
+  FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
+);
+
+-- Bad: Denormalized (repetitive data)
+CREATE TABLE BadEmployees (
+  EmployeeID INT,
+  FirstName NVARCHAR(50),
+  LastName NVARCHAR(50),
+  DepartmentName NVARCHAR(100),  -- Repetitive
+  DepartmentBudget DECIMAL(12, 2)  -- Repetitive
+);`,
+          ka: `-- კარგი: ნორმალიზებული დიზაინი
+CREATE TABLE Departments (
+  DepartmentID INT PRIMARY KEY,
+  DepartmentName NVARCHAR(100) NOT NULL,
+  Budget DECIMAL(12, 2)
+);
+
+CREATE TABLE Employees (
+  EmployeeID INT PRIMARY KEY,
+  FirstName NVARCHAR(50),
+  LastName NVARCHAR(50),
+  DepartmentID INT NOT NULL,
+  HireDate DATE,
+  FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
+);
+
+-- ცუდი: დე-ნორმალიზებული (განმეორებული მონაცემი)
+CREATE TABLE BadEmployees (
+  EmployeeID INT,
+  FirstName NVARCHAR(50),
+  LastName NVARCHAR(50),
+  DepartmentName NVARCHAR(100),  -- განმეორებული
+  DepartmentBudget DECIMAL(12, 2)  -- განმეორებული
+);`
+        }
+      },
+      {
+        title: { en: "Normalization Forms (1NF, 2NF, 3NF)", ka: "ნორმალიზაციის ფორმები (1NF, 2NF, 3NF)" },
+        code: {
+          en: `-- 1NF: Each attribute has atomic values (no repeating groups)
+CREATE TABLE Orders (
+  OrderID INT PRIMARY KEY,
+  CustomerName NVARCHAR(100),
+  ProductName NVARCHAR(100),  -- Single value
+  Quantity INT
+);
+
+-- 2NF: Remove partial dependencies (all non-key attrs depend on full key)
+CREATE TABLE OrderDetails (
+  OrderID INT,
+  ProductID INT,
+  Quantity INT,
+  ProductName NVARCHAR(100),  -- Depends on ProductID, not just OrderID
+  PRIMARY KEY (OrderID, ProductID)
+);
+
+-- Better 2NF:
+CREATE TABLE Products (
+  ProductID INT PRIMARY KEY,
+  ProductName NVARCHAR(100)
+);
+
+CREATE TABLE OrderDetails (
+  OrderID INT,
+  ProductID INT,
+  Quantity INT,
+  PRIMARY KEY (OrderID, ProductID),
+  FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+-- 3NF: Remove transitive dependencies
+CREATE TABLE Employees (
+  EmployeeID INT PRIMARY KEY,
+  EmployeeName NVARCHAR(100),
+  DepartmentName NVARCHAR(100),  -- Bad: depends on DeptID
+  DepartmentHead NVARCHAR(100)   -- Bad: depends on DeptName
+);
+
+-- Better 3NF:
+CREATE TABLE Departments (
+  DepartmentID INT PRIMARY KEY,
+  DepartmentName NVARCHAR(100),
+  DepartmentHead NVARCHAR(100)
+);
+
+CREATE TABLE Employees (
+  EmployeeID INT PRIMARY KEY,
+  EmployeeName NVARCHAR(100),
+  DepartmentID INT,
+  FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
+);`,
+          ka: `-- 1NF: თითოეული ატრიბუტი აქვს ატომური მნიშვნელობები
+CREATE TABLE Orders (
+  OrderID INT PRIMARY KEY,
+  CustomerName NVARCHAR(100),
+  ProductName NVARCHAR(100),
+  Quantity INT
+);
+
+-- 2NF: წაშალეთ ნაწილობრივი დამოკიდებულებები
+CREATE TABLE Products (
+  ProductID INT PRIMARY KEY,
+  ProductName NVARCHAR(100)
+);
+
+CREATE TABLE OrderDetails (
+  OrderID INT,
+  ProductID INT,
+  Quantity INT,
+  PRIMARY KEY (OrderID, ProductID),
+  FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+-- 3NF: წაშალეთ გარდამავალი დამოკიდებულებები
+CREATE TABLE Departments (
+  DepartmentID INT PRIMARY KEY,
+  DepartmentName NVARCHAR(100),
+  DepartmentHead NVARCHAR(100)
+);
+
+CREATE TABLE Employees (
+  EmployeeID INT PRIMARY KEY,
+  EmployeeName NVARCHAR(100),
+  DepartmentID INT,
+  FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
+);`
+        }
+      }
+    ]
+  },
+  {
+    id: "t-sql",
+    title: { en: "T-SQL Features", ka: "T-SQL თავისებურებები" },
+    sections: [
+      {
+        title: { en: "T-SQL Variables & Control Flow", ka: "T-SQL ცვლადები და კონტროლი" },
+        code: {
+          en: `-- Declare variables
+DECLARE @name NVARCHAR(100);
+DECLARE @age INT;
+DECLARE @salary DECIMAL(10, 2) = 50000;
+
+-- SET values
+SET @name = 'John';
+SET @age = 30;
+
+-- IF ELSE
+IF @age >= 21
+  PRINT 'Adult'
+ELSE
+  PRINT 'Minor';
+
+-- WHILE loop
+DECLARE @counter INT = 1;
+WHILE @counter <= 5
+BEGIN
+  PRINT 'Count: ' + CAST(@counter AS NVARCHAR(10));
+  SET @counter = @counter + 1;
+END;
+
+-- CASE
+SELECT name,
+  CASE 
+    WHEN salary > 70000 THEN 'High'
+    WHEN salary > 50000 THEN 'Medium'
+    ELSE 'Low'
+  END AS salary_level
+FROM employees;`,
+          ka: `-- ცვლადების გამოცხადება
+DECLARE @name NVARCHAR(100);
+DECLARE @age INT;
+DECLARE @salary DECIMAL(10, 2) = 50000;
+
+-- SET სიდიდე
+SET @name = 'John';
+SET @age = 30;
+
+-- IF ELSE
+IF @age >= 21
+  PRINT 'ზენი'
+ELSE
+  PRINT 'small';
+
+-- WHILE цикл
+DECLARE @counter INT = 1;
+WHILE @counter <= 5
+BEGIN
+  PRINT 'დაბლოკ: ' + CAST(@counter AS NVARCHAR(10));
+  SET @counter = @counter + 1;
+END;
+
+-- CASE
+SELECT name,
+  CASE 
+    WHEN salary > 70000 THEN 'მაღალი'
+    WHEN salary > 50000 THEN 'საშუალო'
+    ELSE 'დაბალი'
+  END AS salary_level
+FROM employees;`
+        }
+      },
+      {
+        title: { en: "Stored Procedures & Functions", ka: "შენახული პროცედურები და ფუნქციები" },
+        code: {
+          en: `-- Stored Procedure
+CREATE PROCEDURE sp_GetEmployeesByDept
+  @DeptID INT
+AS
+BEGIN
+  SELECT * FROM employees WHERE department_id = @DeptID;
+END;
+
+-- Execute procedure
+EXEC sp_GetEmployeesByDept @DeptID = 5;
+
+-- Procedure with OUTPUT parameter
+CREATE PROCEDURE sp_GetEmployeeCount
+  @DeptID INT,
+  @Count INT OUTPUT
+AS
+BEGIN
+  SELECT @Count = COUNT(*) FROM employees WHERE department_id = @DeptID;
+END;
+
+-- Use OUTPUT
+DECLARE @Result INT;
+EXEC sp_GetEmployeeCount @DeptID = 5, @Count = @Result OUTPUT;
+PRINT 'Employee Count: ' + CAST(@Result AS NVARCHAR(10));
+
+-- User-Defined Function
+CREATE FUNCTION ufn_CalculateBonus(@salary DECIMAL, @percent DECIMAL)
+RETURNS DECIMAL
+AS
+BEGIN
+  RETURN @salary * (@percent / 100);
+END;
+
+-- Use function
+SELECT name, salary, dbo.ufn_CalculateBonus(salary, 10) AS bonus
+FROM employees;`,
+          ka: `-- შენახული პროცედურა
+CREATE PROCEDURE sp_GetEmployeesByDept
+  @DeptID INT
+AS
+BEGIN
+  SELECT * FROM employees WHERE department_id = @DeptID;
+END;
+
+-- პროცედურის შესრულება
+EXEC sp_GetEmployeesByDept @DeptID = 5;
+
+-- პროცედურა OUTPUT პარამეტრით
+CREATE PROCEDURE sp_GetEmployeeCount
+  @DeptID INT,
+  @Count INT OUTPUT
+AS
+BEGIN
+  SELECT @Count = COUNT(*) FROM employees WHERE department_id = @DeptID;
+END;
+
+-- OUTPUT გამოყენება
+DECLARE @Result INT;
+EXEC sp_GetEmployeeCount @DeptID = 5, @Count = @Result OUTPUT;
+PRINT 'თანამშრომელთა რაოდენობა: ' + CAST(@Result AS NVARCHAR(10));
+
+-- მომხმარებლის განსაზღვრული ფუნქცია
+CREATE FUNCTION ufn_CalculateBonus(@salary DECIMAL, @percent DECIMAL)
+RETURNS DECIMAL
+AS
+BEGIN
+  RETURN @salary * (@percent / 100);
+END;
+
+-- ფუნქციის გამოყენება
+SELECT name, salary, dbo.ufn_CalculateBonus(salary, 10) AS bonus
+FROM employees;`
+        }
+      }
+    ]
+  },
+  {
+    id: "indexes",
+    title: { en: "Indexes & Performance", ka: "ინდექსები და ზღვრულობა" },
+    sections: [
+      {
+        title: { en: "Creating & Using Indexes", ka: "ინდექსების შექმნა და გამოყენება" },
+        code: {
+          en: `-- Clustered Index (default on Primary Key)
+CREATE CLUSTERED INDEX idx_emp_id 
+ON employees(employee_id);
+
+-- Non-clustered Index
+CREATE NONCLUSTERED INDEX idx_emp_name 
+ON employees(first_name, last_name);
+
+-- Index with Include columns
+CREATE NONCLUSTERED INDEX idx_salary_dept
+ON employees(department_id)
+INCLUDE (salary, hire_date);
+
+-- Unique Index
+CREATE UNIQUE NONCLUSTERED INDEX idx_email_unique
+ON employees(email);
+
+-- Full-text Index (for text search)
+CREATE FULLTEXT INDEX ON documents(content)
+KEY INDEX pk_documents;
+
+-- Check existing indexes
+SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID('employees');
+
+-- Query execution plan
+SET STATISTICS IO ON;
+SELECT * FROM employees WHERE salary > 50000;
+SET STATISTICS IO OFF;`,
+          ka: `-- კლასტერული ინდექსი
+CREATE CLUSTERED INDEX idx_emp_id 
+ON employees(employee_id);
+
+-- არა-კლასტერული ინდექსი
+CREATE NONCLUSTERED INDEX idx_emp_name 
+ON employees(first_name, last_name);
+
+-- ინდექსი INCLUDE სვეტებით
+CREATE NONCLUSTERED INDEX idx_salary_dept
+ON employees(department_id)
+INCLUDE (salary, hire_date);
+
+-- უნიკალური ინდექსი
+CREATE UNIQUE NONCLUSTERED INDEX idx_email_unique
+ON employees(email);
+
+-- სრული ტექსტის ინდექსი
+CREATE FULLTEXT INDEX ON documents(content)
+KEY INDEX pk_documents;
+
+-- არსებული ინდექსების დანახვა
+SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID('employees');
+
+-- შესრულების გეგმა
+SET STATISTICS IO ON;
+SELECT * FROM employees WHERE salary > 50000;
+SET STATISTICS IO OFF;`
+        }
+      }
+    ]
+  },
+  {
+    id: "triggers",
+    title: { en: "Triggers", ka: "ტრიგერები" },
+    sections: [
+      {
+        title: { en: "INSERT, UPDATE & DELETE Triggers", ka: "INSERT, UPDATE და DELETE ტრიგერები" },
+        code: {
+          en: `-- CREATE TRIGGER for INSERT
+CREATE TRIGGER tr_log_new_employee
+ON employees
+AFTER INSERT
+AS
+BEGIN
+  INSERT INTO employee_audit_log (action, employee_id, action_date)
+  SELECT 'INSERT', employee_id, GETDATE()
+  FROM inserted;
+END;
+
+-- UPDATE TRIGGER
+CREATE TRIGGER tr_update_salary_history
+ON employees
+AFTER UPDATE
+AS
+BEGIN
+  IF UPDATE(salary)
+    INSERT INTO salary_history (employee_id, old_salary, new_salary, change_date)
+    SELECT d.employee_id, d.salary, i.salary, GETDATE()
+    FROM deleted d
+    INNER JOIN inserted i ON d.employee_id = i.employee_id
+    WHERE d.salary <> i.salary;
+END;
+
+-- INSTEAD OF TRIGGER (prevents default action)
+CREATE TRIGGER tr_prevent_emp_delete
+ON employees
+INSTEAD OF DELETE
+AS
+BEGIN
+  PRINT 'Cannot delete employees. Archive instead.';
+  ROLLBACK TRANSACTION;
+END;
+
+-- Disable/Enable Trigger
+DISABLE TRIGGER tr_log_new_employee ON employees;
+ENABLE TRIGGER tr_log_new_employee ON employees;`,
+          ka: `-- INSERT ტრიგერი
+CREATE TRIGGER tr_log_new_employee
+ON employees
+AFTER INSERT
+AS
+BEGIN
+  INSERT INTO employee_audit_log (action, employee_id, action_date)
+  SELECT 'INSERT', employee_id, GETDATE()
+  FROM inserted;
+END;
+
+-- UPDATE ტრიგერი
+CREATE TRIGGER tr_update_salary_history
+ON employees
+AFTER UPDATE
+AS
+BEGIN
+  IF UPDATE(salary)
+    INSERT INTO salary_history (employee_id, old_salary, new_salary, change_date)
+    SELECT d.employee_id, d.salary, i.salary, GETDATE()
+    FROM deleted d
+    INNER JOIN inserted i ON d.employee_id = i.employee_id
+    WHERE d.salary <> i.salary;
+END;
+
+-- INSTEAD OF ტრიგერი
+CREATE TRIGGER tr_prevent_emp_delete
+ON employees
+INSTEAD OF DELETE
+AS
+BEGIN
+  PRINT 'არ შეიძლება თანამშრომელი წაიშალოს.';
+  ROLLBACK TRANSACTION;
+END;`
+        }
+      }
+    ]
+  },
+  {
+    id: "mongodb",
+    title: { en: "NoSQL - MongoDB", ka: "NoSQL - MongoDB" },
+    sections: [
+      {
+        title: { en: "MongoDB Basics", ka: "MongoDB საფუძვლები" },
+        code: {
+          en: `// MongoDB uses JSON-like documents
+db.employees.insertOne({
+  _id: ObjectId(),
+  name: "John Doe",
+  email: "john@example.com",
+  department: "IT",
+  salary: 60000,
+  skills: ["C#", "JavaScript", "SQL"],
+  address: {
+    street: "123 Main St",
+    city: "New York",
+    zip: "10001"
+  },
+  createdAt: new Date()
+});
+
+// Insert multiple documents
+db.employees.insertMany([
+  { name: "Alice", department: "HR", salary: 55000 },
+  { name: "Bob", department: "IT", salary: 65000 }
+]);
+
+// Query documents
+db.employees.find({ department: "IT" });
+db.employees.find({ salary: { $gt: 50000 } });
+db.employees.find({ skills: "C#" });
+
+// Update
+db.employees.updateOne(
+  { name: "John" },
+  { $set: { salary: 70000 } }
+);
+
+// Delete
+db.employees.deleteOne({ name: "John" });`,
+          ka: `// MongoDB იყენებს JSON-ის მსგავს დოკუმენტებს
+db.employees.insertOne({
+  _id: ObjectId(),
+  name: "John Doe",
+  email: "john@example.com",
+  department: "IT",
+  salary: 60000,
+  skills: ["C#", "JavaScript", "SQL"],
+  address: {
+    street: "123 Main St",
+    city: "New York",
+    zip: "10001"
+  },
+  createdAt: new Date()
+});
+
+// მრავალი დოკუმენტის ჩამატება
+db.employees.insertMany([
+  { name: "Alice", department: "HR", salary: 55000 },
+  { name: "Bob", department: "IT", salary: 65000 }
+]);
+
+// დოკუმენტების ძებნა
+db.employees.find({ department: "IT" });
+db.employees.find({ salary: { $gt: 50000 } });
+db.employees.find({ skills: "C#" });
+
+// განახლება
+db.employees.updateOne(
+  { name: "John" },
+  { $set: { salary: 70000 } }
+);
+
+// წაშლა
+db.employees.deleteOne({ name: "John" });`
+        }
+      }
+    ]
+  },
+  {
+    id: "orm-entity",
+    title: { en: "ORM - Entity Framework", ka: "ORM - Entity Framework" },
+    sections: [
+      {
+        title: { en: "Entity Framework Core Basics", ka: "Entity Framework Core საფუძვლები" },
+        code: {
+          en: `// Models
+public class Employee
+{
+  public int EmployeeId { get; set; }
+  public string FirstName { get; set; }
+  public string LastName { get; set; }
+  public decimal Salary { get; set; }
+  public int DepartmentId { get; set; }
+  
+  // Navigation property
+  public virtual Department Department { get; set; }
+}
+
+public class Department
+{
+  public int DepartmentId { get; set; }
+  public string DepartmentName { get; set; }
+  
+  public virtual ICollection<Employee> Employees { get; set; }
+}
+
+// DbContext
+public class CompanyContext : DbContext
+{
+  public DbSet<Employee> Employees { get; set; }
+  public DbSet<Department> Departments { get; set; }
+
+  protected override void OnConfiguring(DbContextOptionsBuilder options)
+  {
+    options.UseSqlServer("Server=.;Database=Company;Trusted_Connection=true;");
+  }
+}
+
+// Usage
+using (var context = new CompanyContext())
+{
+  // Create
+  var emp = new Employee { FirstName = "John", LastName = "Doe", Salary = 50000 };
+  context.Employees.Add(emp);
+  context.SaveChanges();
+  
+  // Read
+  var employees = context.Employees.Where(e => e.Salary > 50000).ToList();
+  
+  // Update
+  emp.Salary = 60000;
+  context.SaveChanges();
+  
+  // Delete
+  context.Employees.Remove(emp);
+  context.SaveChanges();
+}`,
+          ka: `// მოდელები
+public class Employee
+{
+  public int EmployeeId { get; set; }
+  public string FirstName { get; set; }
+  public string LastName { get; set; }
+  public decimal Salary { get; set; }
+  public int DepartmentId { get; set; }
+  
+  // ნავიგაციის თვისება
+  public virtual Department Department { get; set; }
+}
+
+public class Department
+{
+  public int DepartmentId { get; set; }
+  public string DepartmentName { get; set; }
+  
+  public virtual ICollection<Employee> Employees { get; set; }
+}
+
+// DbContext
+public class CompanyContext : DbContext
+{
+  public DbSet<Employee> Employees { get; set; }
+  public DbSet<Department> Departments { get; set; }
+
+  protected override void OnConfiguring(DbContextOptionsBuilder options)
+  {
+    options.UseSqlServer("Server=.;Database=Company;Trusted_Connection=true;");
+  }
+}
+
+// გამოყენება
+using (var context = new CompanyContext())
+{
+  // შექმნა
+  var emp = new Employee { FirstName = "John", LastName = "Doe", Salary = 50000 };
+  context.Employees.Add(emp);
+  context.SaveChanges();
+  
+  // წაკითხვა
+  var employees = context.Employees.Where(e => e.Salary > 50000).ToList();
+  
+  // განახლება
+  emp.Salary = 60000;
+  context.SaveChanges();
+  
+  // წაშლა
+  context.Employees.Remove(emp);
+  context.SaveChanges();
+}`,
+        }
+      }
+    ]
+  }
+];
+
+const webTopics = [
+  {
+    id: "web-fundamentals",
+    title: { en: "Web Basics", ka: "ვებ საფუძვლები" },
+    sections: [
+      {
+        title: { en: "HTTP & Client-Server", ka: "HTTP და კლიენტ-სერვერი" },
+        code: {
+          en: `// HTTP Methods
+GET    - Retrieve data (safe, idempotent)
+POST   - Submit data (creates new resource)
+PUT    - Update entire resource
+PATCH  - Partial update
+DELETE - Remove resource
+
+// HTTP Status Codes
+200    - OK (success)
+201    - Created
+204    - No Content
+400    - Bad Request
+401    - Unauthorized
+403    - Forbidden
+404    - Not Found
+500    - Internal Server Error
+
+// HTTP Request
+GET /api/employees HTTP/1.1
+Host: example.com
+Authorization: Bearer token123
+Content-Type: application/json
+
+// HTTP Response
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 48
+
+{ "id": 1, "name": "John", "salary": 50000 }`,
+          ka: `// HTTP მეთოდები
+GET    - მონაცემის მიღება
+POST   - მონაცემის გაგზავნა
+PUT    - სრული განახლება
+PATCH  - ნაწილობრივი განახლება
+DELETE - რესურსის წაშლა
+
+// HTTP სტატუსის კოდები
+200    - კარგი
+201    - შექმნილი
+400    - ცუდ მოთხოვნა
+401    - არა ავტორიზებული
+404    - ვერ მოიძებნა
+500    - სერვერის შეცდომა
+
+// HTTP მოთხოვნა
+GET /api/employees HTTP/1.1
+Host: example.com
+Authorization: Bearer token123
+Content-Type: application/json
+
+// HTTP პასუხი
+HTTP/1.1 200 OK
+Content-Type: application/json
+{ "id": 1, "name": "John", "salary": 50000 }`
+        }
+      },
+      {
+        title: { en: "HTML & forms", ka: "HTML და ფორმები" },
+        code: {
+          en: `<!-- Basic HTML5 Structure -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Form</title>
+</head>
+<body>
+  <h1>Add Employee</h1>
+  <form method="POST" action="/employees">
+    <input type="text" name="firstName" placeholder="First Name" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="number" name="salary" placeholder="Salary" required />
+    <select name="department">
+      <option>IT</option>
+      <option>HR</option>
+      <option>Sales</option>
+    </select>
+    <textarea name="notes" rows="4"></textarea>
+    <button type="submit">Save</button>
+  </form>
+</body>
+</html>`,
+          ka: `<!-- HTML5 სტრუქტურა -->
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>თანამშრომელი ფორმა</title>
+</head>
+<body>
+  <h1>თანამშრომელი დამატება</h1>
+  <form method="POST" action="/employees">
+    <input type="text" name="firstName" placeholder="სახელი" required />
+    <input type="email" name="email" placeholder="ელფოსტა" required />
+    <input type="number" name="salary" placeholder="ხელფასი" required />
+    <select name="department">
+      <option>IT</option>
+      <option>HR</option>
+      <option>მარკეტინგი</option>
+    </select>
+    <textarea name="notes" rows="4"></textarea>
+    <button type="submit">შენახვა</button>
+  </form>
+</body>
+</html>`
+        }
+      }
+    ]
+  },
+  {
+    id: "javascript-basics",
+    title: { en: "JavaScript Fundamentals", ka: "JavaScript საფუძვლები" },
+    sections: [
+      {
+        title: { en: "Variables, Functions & DOM", ka: "ცვლადები, ფუნქციები და DOM" },
+        code: {
+          en: `// Variables (var, let, const)
+const name = "John";     // Constant
+let age = 30;            // Block-scoped variable
+var isActive = true;     // Function-scoped (avoid)
+
+// Functions
+function greet(name) {
+  return "Hello, " + name;
+}
+
+// Arrow functions (modern)
+const calculateBonus = (salary, percent) => salary * (percent / 100);
+
+// DOM Manipulation
+const button = document.querySelector("#submitBtn");
+button.addEventListener("click", function() {
+  const input = document.getElementById("nameInput");
+  console.log("Name:", input.value);
+  
+  // Create and append elements
+  const p = document.createElement("p");
+  p.textContent = "Employee added!";
+  document.body.appendChild(p);
+});
+
+// Fetch API (modern replacement for XMLHttpRequest)
+fetch('/api/employees', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: "Alice", salary: 55000 })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error(error));`,
+          ka: `// ცვლადები
+const name = "John";     // მუდმივი
+let age = 30;            // ბლოკის ფარი
+var isActive = true;     // ფუნქციის ფარი
+
+// ფუნქციები
+function greet(name) {
+  return "გამარჯობა, " + name;
+}
+
+// ისარი ფუნქციები
+const calculateBonus = (salary, percent) => salary * (percent / 100);
+
+// DOM მანიპულაცია
+const button = document.querySelector("#submitBtn");
+button.addEventListener("click", function() {
+  const input = document.getElementById("nameInput");
+  console.log("სახელი:", input.value);
+  
+  const p = document.createElement("p");
+  p.textContent = "თანამშრომელი დამატებული!";
+  document.body.appendChild(p);
+});
+
+// Fetch API
+fetch('/api/employees', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: "Alice", salary: 55000 })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error(error));`
+        }
+      }
+    ]
+  },
+  {
+    id: "aspnet-core",
+    title: { en: "ASP.NET Core", ka: "ASP.NET Core" },
+    sections: [
+      {
+        title: { en: "ASP.NET Core API", ka: "ASP.NET Core API" },
+        code: {
+          en: `// Startup.cs or Startup class
+public class Startup
+{
+  public void ConfigureServices(IServiceCollection services)
+  {
+    services.AddControllers();
+    services.AddDbContext<CompanyContext>();
+  }
+
+  public void Configure(IApplicationBuilder app)
+  {
+    app.UseRouting();
+    app.UseEndpoints(endpoints => {
+      endpoints.MapControllers();
+    });
+  }
+}
+
+// EmployeesController.cs
+[ApiController]
+[Route("api/[controller]")]
+public class EmployeesController : ControllerBase
+{
+  private readonly CompanyContext _context;
+
+  public EmployeesController(CompanyContext context)
+  {
+    _context = context;
+  }
+
+  [HttpGet]
+  public ActionResult<IEnumerable<Employee>> GetAll()
+  {
+    return _context.Employees.ToList();
+  }
+
+  [HttpGet("{id}")]
+  public ActionResult<Employee> GetById(int id)
+  {
+    var employee = _context.Employees.Find(id);
+    if (employee == null) return NotFound();
+    return employee;
+  }
+
+  [HttpPost]
+  public ActionResult<Employee> Create(Employee emp)
+  {
+    _context.Employees.Add(emp);
+    _context.SaveChanges();
+    return CreatedAtAction("GetById", new { id = emp.EmployeeId }, emp);
+  }
+
+  [HttpPut("{id}")]
+  public IActionResult Update(int id, Employee emp)
+  {
+    var existing = _context.Employees.Find(id);
+    if (existing == null) return NotFound();
+    
+    existing.FirstName = emp.FirstName;
+    existing.Salary = emp.Salary;
+    _context.SaveChanges();
+    return NoContent();
+  }
+
+  [HttpDelete("{id}")]
+  public IActionResult Delete(int id)
+  {
+    var emp = _context.Employees.Find(id);
+    if (emp == null) return NotFound();
+    
+    _context.Employees.Remove(emp);
+    _context.SaveChanges();
+    return NoContent();
+  }
+}`,
+          ka: `// Startup.cs
+public class Startup
+{
+  public void ConfigureServices(IServiceCollection services)
+  {
+    services.AddControllers();
+    services.AddDbContext<CompanyContext>();
+  }
+
+  public void Configure(IApplicationBuilder app)
+  {
+    app.UseRouting();
+    app.UseEndpoints(endpoints => {
+      endpoints.MapControllers();
+    });
+  }
+}
+
+// EmployeesController.cs
+[ApiController]
+[Route("api/[controller]")]
+public class EmployeesController : ControllerBase
+{
+  private readonly CompanyContext _context;
+
+  public EmployeesController(CompanyContext context)
+  {
+    _context = context;
+  }
+
+  [HttpGet]
+  public ActionResult<IEnumerable<Employee>> GetAll()
+  {
+    return _context.Employees.ToList();
+  }
+
+  [HttpPost]
+  public ActionResult<Employee> Create(Employee emp)
+  {
+    _context.Employees.Add(emp);
+    _context.SaveChanges();
+    return CreatedAtAction("GetById", new { id = emp.EmployeeId }, emp);
+  }
+
+  [HttpDelete("{id}")]
+  public IActionResult Delete(int id)
+  {
+    var emp = _context.Employees.Find(id);
+    if (emp == null) return NotFound();
+    
+    _context.Employees.Remove(emp);
+    _context.SaveChanges();
+    return NoContent();
+  }
+}`
+        }
+      }
+    ]
+  },
+  {
+    id: "design-patterns",
+    title: { en: "Design Patterns", ka: "დიზაინის პატერნები" },
+    sections: [
+      {
+        title: { en: "MVC, Repository & Dependency Injection", ka: "MVC, Repository და Dependency Injection" },
+        code: {
+          en: `// Repository Pattern
+public interface IEmployeeRepository
+{
+  IEnumerable<Employee> GetAll();
+  Employee GetById(int id);
+  void Add(Employee emp);
+  void Delete(int id);
+}
+
+public class EmployeeRepository : IEmployeeRepository
+{
+  private readonly CompanyContext _context;
+  
+  public EmployeeRepository(CompanyContext context)
+  {
+    _context = context;
+  }
+  
+  public IEnumerable<Employee> GetAll() => _context.Employees.ToList();
+  public Employee GetById(int id) => _context.Employees.Find(id);
+  
+  public void Add(Employee emp)
+  {
+    _context.Employees.Add(emp);
+    _context.SaveChanges();
+  }
+  
+  public void Delete(int id)
+  {
+    var emp = GetById(id);
+    if (emp != null)
+    {
+      _context.Employees.Remove(emp);
+      _context.SaveChanges();
+    }
+  }
+}
+
+// Service Layer
+public class EmployeeService
+{
+  private readonly IEmployeeRepository _repository;
+  
+  public EmployeeService(IEmployeeRepository repository)
+  {
+    _repository = repository;
+  }
+  
+  public decimal CalculateAnnualBonus(int empId, decimal bonusPercent)
+  {
+    var emp = _repository.GetById(empId);
+    return emp.Salary * (bonusPercent / 100);
+  }
+}
+
+// Dependency Injection Setup
+services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+services.AddScoped<EmployeeService>();`,
+          ka: `// Repository პატერნი
+public interface IEmployeeRepository
+{
+  IEnumerable<Employee> GetAll();
+  Employee GetById(int id);
+  void Add(Employee emp);
+  void Delete(int id);
+}
+
+public class EmployeeRepository : IEmployeeRepository
+{
+  private readonly CompanyContext _context;
+  
+  public EmployeeRepository(CompanyContext context)
+  {
+    _context = context;
+  }
+  
+  public IEnumerable<Employee> GetAll() => _context.Employees.ToList();
+  public Employee GetById(int id) => _context.Employees.Find(id);
+  
+  public void Add(Employee emp)
+  {
+    _context.Employees.Add(emp);
+    _context.SaveChanges();
+  }
+  
+  public void Delete(int id)
+  {
+    var emp = GetById(id);
+    if (emp != null)
+    {
+      _context.Employees.Remove(emp);
+      _context.SaveChanges();
+    }
+  }
+}
+
+// Service დონე
+public class EmployeeService
+{
+  private readonly IEmployeeRepository _repository;
+  
+  public EmployeeService(IEmployeeRepository repository)
+  {
+    _repository = repository;
+  }
+  
+  public decimal CalculateAnnualBonus(int empId, decimal bonusPercent)
+  {
+    var emp = _repository.GetById(empId);
+    return emp.Salary * (bonusPercent / 100);
+  }
+}
+
+// Dependency Injection
+services.AddScoped<IEmployeeRepository, EmployeeRepository>();`
+        }
+      }
+    ]
+  }
+];
+
+const projectTopics = [
+  {
+    id: "library-system",
+    title: { en: "Library Management System", ka: "ბიბლიოთეკის მართვის სისტემა" },
+    sections: [
+      {
+        title: { en: "Complete Full-Stack Implementation", ka: "სრული Full-Stack განხორციელება" },
+        code: {
+          en: `// === DATABASE SCHEMA (T-SQL) ===
+CREATE TABLE Books (
+  BookID INT PRIMARY KEY IDENTITY(1,1),
+  Title NVARCHAR(200) NOT NULL,
+  Author NVARCHAR(100),
+  ISBN NVARCHAR(13) UNIQUE,
+  PublishedYear INT,
+  Quantity INT,
+  CreatedDate DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE Members (
+  MemberID INT PRIMARY KEY IDENTITY(1,1),
+  FirstName NVARCHAR(50),
+  LastName NVARCHAR(50),
+  Email NVARCHAR(100) UNIQUE,
+  Phone NVARCHAR(20),
+  MembershipDate DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE Borrowings (
+  BorrowingID INT PRIMARY KEY IDENTITY(1,1),
+  BookID INT NOT NULL,
+  MemberID INT NOT NULL,
+  BorrowDate DATETIME DEFAULT GETDATE(),
+  ReturnDate DATETIME,
+  DueDate DATETIME,
+  Status NVARCHAR(20),
+  FOREIGN KEY (BookID) REFERENCES Books(BookID),
+  FOREIGN KEY (MemberID) REFERENCES Members(MemberID)
+);
+
+-- === STORED PROCEDURES ===
+CREATE PROCEDURE sp_BorrowBook
+  @BookID INT,
+  @MemberID INT,
+  @BorrowDays INT = 14
+AS
+BEGIN
+  BEGIN TRANSACTION;
+  
+  IF (SELECT Quantity FROM Books WHERE BookID = @BookID) > 0
+  BEGIN
+    UPDATE Books SET Quantity = Quantity - 1 WHERE BookID = @BookID;
+    
+    INSERT INTO Borrowings (BookID, MemberID, DueDate, Status)
+    VALUES (@BookID, @MemberID, DATEADD(DAY, @BorrowDays, GETDATE()), 'Borrowed');
+    
+    COMMIT TRANSACTION;
+  END
+  ELSE
+  BEGIN
+    ROLLBACK TRANSACTION;
+    RAISERROR('Book not available', 16, 1);
+  END;
+END;
+
+CREATE PROCEDURE sp_ReturnBook
+  @BorrowingID INT
+AS
+BEGIN
+  UPDATE Borrowings SET ReturnDate = GETDATE(), Status = 'Returned'
+  WHERE BorrowingID = @BorrowingID;
+  
+  UPDATE Books SET Quantity = Quantity + 1
+  WHERE BookID = (SELECT BookID FROM Borrowings WHERE BorrowingID = @BorrowingID);
+END;
+
+-- === C# MODELS & DATABASE CONTEXT ===
+public class Book
+{
+  public int BookID { get; set; }
+  public string Title { get; set; }
+  public string Author { get; set; }
+  public string ISBN { get; set; }
+  public int PublishedYear { get; set; }
+  public int Quantity { get; set; }
+  public virtual ICollection<Borrowing> Borrowings { get; set; }
+}
+
+public class Member
+{
+  public int MemberID { get; set; }
+  public string FirstName { get; set; }
+  public string LastName { get; set; }
+  public string Email { get; set; }
+  public string Phone { get; set; }
+  public virtual ICollection<Borrowing> Borrowings { get; set; }
+}
+
+public class Borrowing
+{
+  public int BorrowingID { get; set; }
+  public int BookID { get; set; }
+  public int MemberID { get; set; }
+  public DateTime BorrowDate { get; set; }
+  public DateTime? ReturnDate { get; set; }
+  public DateTime DueDate { get; set; }
+  public string Status { get; set; }
+  public virtual Book Book { get; set; }
+  public virtual Member Member { get; set; }
+}
+
+public class LibraryContext : DbContext
+{
+  public DbSet<Book> Books { get; set; }
+  public DbSet<Member> Members { get; set; }
+  public DbSet<Borrowing> Borrowings { get; set; }
+}
+
+// === ASP.NET CORE CONTROLLER ===
+[ApiController]
+[Route("api/[controller]")]
+public class BooksController : ControllerBase
+{
+  private readonly LibraryContext _context;
+  
+  [HttpGet]
+  public ActionResult<IEnumerable<Book>> GetBooks()
+  {
+    return _context.Books.ToList();
+  }
+  
+  [HttpPost("borrow")]
+  public IActionResult BorrowBook(int bookId, int memberId)
+  {
+    var book = _context.Books.Find(bookId);
+    if (book?.Quantity <= 0) return BadRequest("Book not available");
+    
+    book.Quantity--;
+    var borrowing = new Borrowing
+    {
+      BookID = bookId,
+      MemberID = memberId,
+      DueDate = DateTime.Now.AddDays(14),
+      Status = "Borrowed"
+    };
+    _context.Borrowings.Add(borrowing);
+    _context.SaveChanges();
+    return Ok(borrowing);
+  }
+}
+
+// === JAVASCRIPT FRONTEND ===
+async function borrowBook(bookId, memberId) {
+  const response = await fetch('/api/books/borrow', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bookId, memberId })
+  });
+  
+  if (response.ok) {
+    alert('Book borrowed successfully!');
+    loadBooks();
+  }
+}
+
+async function loadBooks() {
+  const books = await fetch('/api/books').then(r => r.json());
+  const html = books.map(b => \\\`
+    <div class="book-card">
+      <h3>\${b.title}</h3>
+      <p>Author: \${b.author}</p>
+      <p>Available: \${b.quantity}</p>
+      <button onclick="showBorrowForm(\${b.bookID})">Borrow</button>
+    </div>
+  \\\`).join('');
+  document.getElementById('books-container').innerHTML = html;
+}`,
+          ka: `// === DATABASE SCHEMA (T-SQL) ===
+CREATE TABLE Books (
+  BookID INT PRIMARY KEY IDENTITY(1,1),
+  Title NVARCHAR(200) NOT NULL,
+  Author NVARCHAR(100),
+  ISBN NVARCHAR(13) UNIQUE,
+  PublishedYear INT,
+  Quantity INT
+);
+
+CREATE TABLE Members (
+  MemberID INT PRIMARY KEY IDENTITY(1,1),
+  FirstName NVARCHAR(50),
+  LastName NVARCHAR(50),
+  Email NVARCHAR(100),
+  Phone NVARCHAR(20)
+);
+
+CREATE TABLE Borrowings (
+  BorrowingID INT PRIMARY KEY IDENTITY(1,1),
+  BookID INT NOT NULL,
+  MemberID INT NOT NULL,
+  BorrowDate DATETIME DEFAULT GETDATE(),
+  ReturnDate DATETIME,
+  DueDate DATETIME,
+  Status NVARCHAR(20),
+  FOREIGN KEY (BookID) REFERENCES Books(BookID),
+  FOREIGN KEY (MemberID) REFERENCES Members(MemberID)
+);
+
+-- === STORED PROCEDURES ===
+CREATE PROCEDURE sp_BorrowBook
+  @BookID INT,
+  @MemberID INT
+AS
+BEGIN
+  BEGIN TRANSACTION;
+  
+  IF (SELECT Quantity FROM Books WHERE BookID = @BookID) > 0
+  BEGIN
+    UPDATE Books SET Quantity = Quantity - 1 WHERE BookID = @BookID;
+    
+    INSERT INTO Borrowings (BookID, MemberID, DueDate, Status)
+    VALUES (@BookID, @MemberID, DATEADD(DAY, 14, GETDATE()), 'Borrowed');
+    
+    COMMIT TRANSACTION;
+  END
+  ELSE
+  BEGIN
+    ROLLBACK TRANSACTION;
+  END;
+END;
+
+// === C# MODELS ===
+public class Book
+{
+  public int BookID { get; set; }
+  public string Title { get; set; }
+  public string Author { get; set; }
+  public int Quantity { get; set; }
+}
+
+public class Member
+{
+  public int MemberID { get; set; }
+  public string FirstName { get; set; }
+  public string LastName { get; set; }
+}
+
+// === ASP.NET CORE API ===
+[ApiController]
+[Route("api/[controller]")]
+public class BooksController : ControllerBase
+{
+  private readonly LibraryContext _context;
+  
+  [HttpGet]
+  public ActionResult<IEnumerable<Book>> GetBooks()
+  {
+    return _context.Books.ToList();
+  }
+  
+  [HttpPost("borrow")]
+  public IActionResult BorrowBook(int bookId, int memberId)
+  {
+    var book = _context.Books.Find(bookId);
+    if (book?.Quantity <= 0) return BadRequest("ხელმისაწვდომელი არ არის");
+    
+    book.Quantity--;
+    _context.SaveChanges();
+    return Ok(book);
+  }
+}
+
+// === JAVASCRIPT FRONTEND ===
+async function borrowBook(bookId, memberId) {
+  const response = await fetch('/api/books/borrow', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bookId, memberId })
+  });
+  
+  if (response.ok) {
+    alert('წიგნი წაღებულია!');
+  }
+}`
+        }
+      }
+    ]
+  },
+  {
+    id: "warehouse-system",
+    title: { en: "Warehouse Automation System", ka: "საწყობის ავტომატიზაციის სისტემა" },
+    sections: [
+      {
+        title: { en: "Complete Implementation with DML, DDL & Transactions", ka: "სრული განხორციელება ტრანზაქციებთან" },
+        code: {
+          en: `-- === WAREHOUSE DATABASE ===
+CREATE TABLE Products (
+  ProductID INT PRIMARY KEY IDENTITY(1,1),
+  ProductName NVARCHAR(100),
+  SKU NVARCHAR(50) UNIQUE,
+  UnitPrice DECIMAL(10, 2),
+  StockQuantity INT
+);
+
+CREATE TABLE Warehouses (
+  WarehouseID INT PRIMARY KEY IDENTITY(1,1),
+  WarehouseName NVARCHAR(100),
+  Location NVARCHAR(200),
+  Capacity INT
+);
+
+CREATE TABLE Stock (
+  StockID INT PRIMARY KEY IDENTITY(1,1),
+  WarehouseID INT,
+  ProductID INT,
+  Quantity INT,
+  LastUpdated DATETIME,
+  FOREIGN KEY (WarehouseID) REFERENCES Warehouses(WarehouseID),
+  FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+-- === TRANSACTION: Move Stock ===
+CREATE PROCEDURE sp_TransferStock
+  @FromWarehouseID INT,
+  @ToWarehouseID INT,
+  @ProductID INT,
+  @Quantity INT
+AS
+BEGIN
+  BEGIN TRANSACTION;
+  
+  BEGIN TRY
+    -- Deduct from source
+    UPDATE Stock SET Quantity = Quantity - @Quantity
+    WHERE WarehouseID = @FromWarehouseID AND ProductID = @ProductID;
+    
+    -- Add to destination
+    UPDATE Stock SET Quantity = Quantity + @Quantity
+    WHERE WarehouseID = @ToWarehouseID AND ProductID = @ProductID;
+    
+    COMMIT TRANSACTION;
+  END TRY
+  BEGIN CATCH
+    ROLLBACK TRANSACTION;
+    THROW;
+  END CATCH;
+END;
+
+-- === C# WAREHOUSE SERVICE ===
+public class WarehouseService
+{
+  private readonly IStockRepository _stockRepo;
+  
+  public async Task<bool> TransferStockAsync(int fromWarehouse, int toWarehouse, int product, int quantity)
+  {
+    using (var transaction = _context.Database.BeginTransaction())
+    {
+      try
+      {
+        var fromStock = _stockRepo.GetStock(fromWarehouse, product);
+        if (fromStock.Quantity < quantity) return false;
+        
+        fromStock.Quantity -= quantity;
+        var toStock = _stockRepo.GetStock(toWarehouse, product);
+        toStock.Quantity += quantity;
+        
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return true;
+      }
+      catch
+      {
+        await transaction.RollbackAsync();
+        return false;
+      }
+    }
+  }
+  
+  public decimal CalculateWarehouseValue(int warehouseID)
+  {
+    var stocks = _context.Stock
+      .Where(s => s.WarehouseID == warehouseID)
+      .Include(s => s.Product)
+      .ToList();
+    
+    return stocks.Sum(s => s.Quantity * s.Product.UnitPrice);
+  }
+}
+
+// === ASP.NET API ===
+[ApiController]
+[Route("api/warehouse")]
+public class WarehouseController : ControllerBase
+{
+  private readonly WarehouseService _service;
+  
+  [HttpPost("transfer")]
+  public async Task<IActionResult> TransferStock(int from, int to, int product, int qty)
+  {
+    var success = await _service.TransferStockAsync(from, to, product, qty);
+    return success ? Ok("Transfer successful") : BadRequest("Insufficient stock");
+  }
+  
+  [HttpGet("{id}/value")]
+  public ActionResult<decimal> GetWarehouseValue(int id)
+  {
+    return _service.CalculateWarehouseValue(id);
+  }
+}`,
+          ka: `-- === საწყობის ბაზა ===
+CREATE TABLE Products (
+  ProductID INT PRIMARY KEY IDENTITY(1,1),
+  ProductName NVARCHAR(100),
+  SKU NVARCHAR(50) UNIQUE,
+  UnitPrice DECIMAL(10, 2),
+  StockQuantity INT
+);
+
+CREATE TABLE Warehouses (
+  WarehouseID INT PRIMARY KEY IDENTITY(1,1),
+  WarehouseName NVARCHAR(100),
+  Location NVARCHAR(200)
+);
+
+CREATE TABLE Stock (
+  StockID INT PRIMARY KEY IDENTITY(1,1),
+  WarehouseID INT,
+  ProductID INT,
+  Quantity INT,
+  LastUpdated DATETIME,
+  FOREIGN KEY (WarehouseID) REFERENCES Warehouses(WarehouseID),
+  FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+-- === TRANSACTION: Stock გადატანა ===
+CREATE PROCEDURE sp_TransferStock
+  @FromWarehouseID INT,
+  @ToWarehouseID INT,
+  @ProductID INT,
+  @Quantity INT
+AS
+BEGIN
+  BEGIN TRANSACTION;
+  
+  BEGIN TRY
+    UPDATE Stock SET Quantity = Quantity - @Quantity
+    WHERE WarehouseID = @FromWarehouseID AND ProductID = @ProductID;
+    
+    UPDATE Stock SET Quantity = Quantity + @Quantity
+    WHERE WarehouseID = @ToWarehouseID AND ProductID = @ProductID;
+    
+    COMMIT TRANSACTION;
+  END TRY
+  BEGIN CATCH
+    ROLLBACK TRANSACTION;
+  END CATCH;
+END;
+
+// === C# SERVICE ===
+public class WarehouseService
+{
+  public async Task<bool> TransferStockAsync(int fromWarehouse, int toWarehouse, int product, int quantity)
+  {
+    using (var transaction = _context.Database.BeginTransaction())
+    {
+      try
+      {
+        var fromStock = _context.Stock.FirstOrDefault(s => 
+          s.WarehouseID == fromWarehouse && s.ProductID == product);
+        if (fromStock?.Quantity < quantity) return false;
+        
+        fromStock.Quantity -= quantity;
+        var toStock = _context.Stock.FirstOrDefault(s => 
+          s.WarehouseID == toWarehouse && s.ProductID == product);
+        toStock.Quantity += quantity;
+        
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return true;
+      }
+      catch { await transaction.RollbackAsync(); return false; }
+    }
+  }
+}
+
+// === API ===
+[ApiController]
+[Route("api/warehouse")]
+public class WarehouseController : ControllerBase
+{
+  [HttpPost("transfer")]
+  public async Task<IActionResult> TransferStock(int from, int to, int product, int qty)
+  {
+    var success = await _service.TransferStockAsync(from, to, product, qty);
+    return success ? Ok("წარმატებული") : BadRequest("არ არის საკმარი");
+  }
+}`
+        }
+      }
+    ]
+  },
+  {
+    id: "ecommerce-system",
+    title: { en: "E-Commerce Management System", ka: "ელექტრონული ვაჭრობის სისტემა" },
+    sections: [
+      {
+        title: { en: "Full E-Commerce Implementation", ka: "სრული E-Commerce განხორციელება" },
+        code: {
+          en: `-- === DATABASE SCHEMA ===
+CREATE TABLE Products (
+  ProductID INT PRIMARY KEY IDENTITY(1,1),
+  ProductName NVARCHAR(200),
+  Description NVARCHAR(MAX),
+  Price DECIMAL(10, 2),
+  Stock INT,
+  CategoryID INT
+);
+
+CREATE TABLE Orders (
+  OrderID INT PRIMARY KEY IDENTITY(1,1),
+  CustomerID INT,
+  OrderDate DATETIME,
+  TotalAmount DECIMAL(12, 2),
+  Status NVARCHAR(50),
+  ShippingAddress NVARCHAR(300)
+);
+
+CREATE TABLE OrderItems (
+  OrderItemID INT PRIMARY KEY IDENTITY(1,1),
+  OrderID INT,
+  ProductID INT,
+  Quantity INT,
+  UnitPrice DECIMAL(10, 2),
+  Subtotal DECIMAL(12, 2),
+  FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+  FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+CREATE TABLE Customers (
+  CustomerID INT PRIMARY KEY IDENTITY(1,1),
+  FirstName NVARCHAR(50),
+  LastName NVARCHAR(50),
+  Email NVARCHAR(100) UNIQUE,
+  Phone NVARCHAR(20),
+  CreatedDate DATETIME
+);
+
+-- === STORED PROCEDURE: CREATE ORDER ===
+CREATE PROCEDURE sp_CreateOrder
+  @CustomerID INT,
+  @ShippingAddress NVARCHAR(300),
+  @OrderItemsXML XML
+AS
+BEGIN
+  BEGIN TRANSACTION;
+  
+  BEGIN TRY
+    DECLARE @OrderID INT;
+    DECLARE @TotalAmount DECIMAL(12, 2) = 0;
+    
+    -- Create order
+    INSERT INTO Orders (CustomerID, OrderDate, Status, ShippingAddress)
+    VALUES (@CustomerID, GETDATE(), 'Pending', @ShippingAddress);
+    
+    SET @OrderID = SCOPE_IDENTITY();
+    
+    -- Insert order items
+    INSERT INTO OrderItems (OrderID, ProductID, Quantity, UnitPrice, Subtotal)
+    SELECT 
+      @OrderID,
+      t.value('(ProductID)[1]', 'INT'),
+      t.value('(Quantity)[1]', 'INT'),
+      p.Price,
+      t.value('(Quantity)[1]', 'INT') * p.Price
+    FROM @OrderItemsXML.nodes('Items/Item') AS x(t)
+    JOIN Products p ON p.ProductID = t.value('(ProductID)[1]', 'INT');
+    
+    -- Update total
+    UPDATE Orders SET TotalAmount = (SELECT SUM(Subtotal) FROM OrderItems WHERE OrderID = @OrderID)
+    WHERE OrderID = @OrderID;
+    
+    -- Update stock
+    UPDATE Products SET Stock = Stock - oi.Quantity
+    FROM OrderItems oi
+    WHERE oi.OrderID = @OrderID AND Products.ProductID = oi.ProductID;
+    
+    COMMIT TRANSACTION;
+    SELECT @OrderID AS OrderID;
+  END TRY
+  BEGIN CATCH
+    ROLLBACK TRANSACTION;
+    THROW;
+  END CATCH;
+END;
+
+-- === C# ECOMMERCE SERVICE ===
+public class OrderService
+{
+  private readonly IOrderRepository _orderRepo;
+  private readonly IProductRepository _productRepo;
+  
+  public async Task<Order> CreateOrderAsync(Order order)
+  {
+    using (var transaction = _context.Database.BeginTransaction())
+    {
+      try
+      {
+        decimal total = 0;
+        
+        foreach (var item in order.OrderItems)
+        {
+          var product = await _productRepo.GetByIdAsync(item.ProductID);
+          if (product.Stock < item.Quantity)
+            throw new InvalidOperationException("Insufficient stock");
+          
+          item.UnitPrice = product.Price;
+          item.Subtotal = item.Quantity * product.Price;
+          total += item.Subtotal;
+          
+          product.Stock -= item.Quantity;
+        }
+        
+        order.TotalAmount = total;
+        order.OrderDate = DateTime.Now;
+        order.Status = "Pending";
+        
+        _context.Orders.Add(order);
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+        
+        return order;
+      }
+      catch
+      {
+        await transaction.RollbackAsync();
+        throw;
+      }
+    }
+  }
+  
+  public async Task<bool> UpdateOrderStatusAsync(int orderId, string newStatus)
+  {
+    var order = await _orderRepo.GetByIdAsync(orderId);
+    if (order == null) return false;
+    
+    order.Status = newStatus;
+    await _context.SaveChangesAsync();
+    return true;
+  }
+}
+
+// === ASPNET API ===
+[ApiController]
+[Route("api/orders")]
+public class OrdersController : ControllerBase
+{
+  [HttpPost]
+  public async Task<ActionResult<Order>> CreateOrder(CreateOrderRequest req)
+  {
+    var order = new Order
+    {
+      CustomerID = req.CustomerID,
+      ShippingAddress = req.Address,
+      OrderItems = req.Items.Select(i => new OrderItem { ProductID = i.ProductID, Quantity = i.Quantity }).ToList()
+    };
+    
+    var created = await _orderService.CreateOrderAsync(order);
+    return CreatedAtAction("GetOrder", new { id = created.OrderID }, created);
+  }
+  
+  [HttpGet("{id}")]
+  public async Task<ActionResult<Order>> GetOrder(int id)
+  {
+    var order = await _orderService.GetOrderWithItemsAsync(id);
+    return order ?? NotFound();
+  }
+}
+
+// === REACT FRONTEND ===
+function ShoppingCart() {
+  const [cart, setCart] = useState([]);
+  const [total, setTotal] = useState(0);
+  
+  const addToCart = (product) => {
+    setCart([...cart, { ...product, qty: 1 }]);
+  };
+  
+  const checkout = async () => {
+    const order = {
+      customerID: currentUser.id,
+      address: shippingAddress,
+      items: cart.map(item => ({ productID: item.id, quantity: item.qty }))
+    };
+    
+    const response = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(order)
+    });
+    
+    if (response.ok) {
+      const created = await response.json();
+      alert(\`Order \${created.orderID} created!\`);
+      setCart([]);
+    }
+  };
+  
+  return (
+    <div className="cart">
+      {cart.map(item => (
+        <div key={item.id}>
+          <h3>{item.productName}</h3>
+          <p>Price: \${item.price}</p>
+          <input type="number" value={item.qty} />
+        </div>
+      ))}
+      <button onClick={checkout}>Checkout</button>
+    </div>
+  );
+}`,
+          ka: `-- === ელექტრონული ვაჭრობის ბაზა ===
+CREATE TABLE Products (
+  ProductID INT PRIMARY KEY IDENTITY(1,1),
+  ProductName NVARCHAR(200),
+  Price DECIMAL(10, 2),
+  Stock INT
+);
+
+CREATE TABLE Orders (
+  OrderID INT PRIMARY KEY IDENTITY(1,1),
+  CustomerID INT,
+  OrderDate DATETIME,
+  TotalAmount DECIMAL(12, 2),
+  Status NVARCHAR(50)
+);
+
+CREATE TABLE OrderItems (
+  OrderItemID INT PRIMARY KEY IDENTITY(1,1),
+  OrderID INT,
+  ProductID INT,
+  Quantity INT,
+  Subtotal DECIMAL(12, 2),
+  FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+  FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+-- === ORDER PROCEDURE ===
+CREATE PROCEDURE sp_CreateOrder
+  @CustomerID INT,
+  @OrderItemsXML XML
+AS
+BEGIN
+  BEGIN TRANSACTION;
+  
+  BEGIN TRY
+    DECLARE @OrderID INT;
+    INSERT INTO Orders (CustomerID, OrderDate, Status)
+    VALUES (@CustomerID, GETDATE(), 'Pending');
+    
+    SET @OrderID = SCOPE_IDENTITY();
+    
+    INSERT INTO OrderItems (OrderID, ProductID, Quantity, Subtotal)
+    SELECT @OrderID, id, qty, qty * price FROM ...;
+    
+    UPDATE Products SET Stock = Stock - qty WHERE ...; 
+    COMMIT TRANSACTION;
+  END TRY
+  BEGIN CATCH
+    ROLLBACK TRANSACTION;
+  END CATCH;
+END;
+
+// === C# SERVICE ===
+public class OrderService
+{
+  public async Task<Order> CreateOrderAsync(Order order)
+  {
+    using (var transaction = _context.Database.BeginTransaction())
+    {
+      try
+      {
+        order.OrderDate = DateTime.Now;
+        order.Status = "Pending";
+        _context.Orders.Add(order);
+        
+        foreach (var item in order.OrderItems)
+        {
+          var product = _context.Products.Find(item.ProductID);
+          product.Stock -= item.Quantity;
+        }
+        
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return order;
+      }
+      catch { await transaction.RollbackAsync(); throw; }
+    }
+  }
+}
+
+// === ASP.NET API ===
+[ApiController]
+[Route("api/orders")]
+public class OrdersController : ControllerBase
+{
+  [HttpPost]
+  public async Task<ActionResult<Order>> CreateOrder(Order order)
+  {
+    var created = await _orderService.CreateOrderAsync(order);
+    return Ok(created);
+  }
+}
+
+// === REACT ===
+async function checkout(cart) {
+  const response = await fetch('/api/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerID: 1, items: cart })
+  });
+  
+  if (response.ok) alert('შეკვეთა შემოსულია!');
+}`
+        }
+      }
+    ]
+  },
+  {
+    id: "docker",
+    title: { en: "Docker & DevOps", ka: "Docker და DevOps" },
+    sections: [
+      {
+        title: { en: "Docker Basics", ka: "Docker საფუძვლები" },
+        code: {
+          en: `# Dockerfile for ASP.NET Core API
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 5000
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["CompanyAPI.csproj", ""]
+RUN dotnet restore "CompanyAPI.csproj"
+COPY . .
+RUN dotnet build "CompanyAPI.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "CompanyAPI.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "CompanyAPI.dll"]
+
+# docker-compose.yml
+version: '3'
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "YourPassword123!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_volume:/var/opt/mssql
+
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=Company;User Id=sa;Password=YourPassword123!"
+    depends_on:
+      - sqlserver
+
+volumes:
+  sqlserver_volume:
+
+# Build and run
+docker-compose up --build
+docker-compose down`,
+          ka: `# Dockerfile ASP.NET Core API-სთვის
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 5000
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["CompanyAPI.csproj", ""]
+RUN dotnet restore "CompanyAPI.csproj"
+COPY . .
+RUN dotnet build "CompanyAPI.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "CompanyAPI.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "CompanyAPI.dll"]
+
+# docker-compose.yml
+version: '3'
+services:
+  database:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "YourPassword123!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433
+
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+
+# შესრულება
+docker-compose up --build`
+        }
+      }
+    ]
+  },
+  {
+    id: "git-github",
+    title: { en: "Git & GitHub", ka: "Git და GitHub" },
+    sections: [
+      {
+        title: { en: "Git Basics & Workflow", ka: "Git საფუძვლები და სამუშაო ნაკადი" },
+        code: {
+          en: `# Initialize repository
+git init
+git config user.name "Your Name"
+git config user.email "email@example.com"
+
+# Add and commit
+git add .
+git commit -m "Initial commit"
+
+# Branching
+git branch feature/new-feature
+git checkout feature/new-feature
+git checkout -b feature/another  # create and switch
+
+# Push to GitHub
+git remote add origin https://github.com/user/repo.git
+git branch -M main
+git push -u origin main
+
+# Pull changes
+git pull origin main
+
+# Merge branch
+git checkout main
+git merge feature/new-feature
+
+# View log
+git log --oneline
+git log --graph --all --decorate
+
+# Undo changes
+git revert HEAD
+git reset --hard HEAD~1
+git stash
+
+# Tag release
+git tag -a v1.0.0 -m "Version 1.0.0"
+git push origin v1.0.0`,
+          ka: `# რეპოზიტორი ინიციალიზაცია
+git init
+git config user.name "თქვენი სახელი"
+git config user.email "email@example.com"
+
+# დამატება და კომიტი
+git add .
+git commit -m "პირველი კომიტი"
+
+# ტოტი (Branch)
+git branch feature/new-feature
+git checkout feature/new-feature
+git checkout -b feature/another
+
+# GitHub-ზე დაწკაპვა
+git remote add origin https://github.com/user/repo.git
+git branch -M main
+git push -u origin main
+
+# ცვლილებების მიღება
+git pull origin main
+
+# ტოტის დაზღვევა
+git checkout main
+git merge feature/new-feature
+
+# ისტორიის ხედვა
+git log --oneline
+git log --graph --all --decorate
+
+# ცვლილებების უკან დაბრუნება
+git revert HEAD
+git reset --hard HEAD~1
+git stash`
+        }
+      }
+    ]
   }
 ];
 
@@ -1382,7 +3505,32 @@ export default function App() {
   const [uiLang, setUiLang] = useState("en");
   const [topicsOpen, setTopicsOpen] = useState(false);
 
-  const allTopics = lang === "csharp" ? csharpTopics : sqlTopics;
+  const categories = [
+    { id: "csharp", title: "C#", icon: "🧱", color: "#3b82f6" },
+    { id: "sql", title: "SQL", icon: "🗄️", color: "#16a34a" },
+    { id: "web", title: "Web", icon: "🌐", color: "#f59e0b" },
+    { id: "projects", title: "Projects", icon: "📦", color: "#8b5cf6" }
+  ];
+
+  const getTopics = () => {
+    switch(lang) {
+      case "csharp": return csharpTopics;
+      case "sql": return sqlTopics;
+      case "web": return webTopics;
+      case "projects": return projectTopics;
+      default: return csharpTopics;
+    }
+  };
+
+  // Update active topic when language category changes
+  useEffect(() => {
+    const topics = getTopics();
+    if (topics.length > 0) {
+      setActiveTopic(topics[0].id);
+    }
+  }, [lang]);
+
+  const allTopics = getTopics();
   const currentTopic = allTopics.find(t => t.id === activeTopic);
   
   const getTitle = (titleObj) => titleObj[uiLang] || titleObj.en;
@@ -1400,9 +3548,7 @@ export default function App() {
       })
     : null;
 
-  const langData = lang === "csharp" 
-    ? { title: "C#", icon: "🧱", color: "#3b82f6" }
-    : { title: "SQL", icon: "🗄️", color: "#16a34a" };
+  const langData = categories.find(c => c.id === lang) || categories[0];
 
   const t = translations[uiLang];
 
@@ -1415,14 +3561,16 @@ export default function App() {
         </div>
 
         <div className="lang-tabs">
-          {[
-            { id: "csharp", title: "C#", icon: "🧱", color: "#3b82f6" },
-            { id: "sql", title: "SQL", icon: "🗄️", color: "#16a34a" }
-          ].map(l => (
+          {categories.map(l => (
             <button
               key={l.id}
               className={`lang-tab ${l.id === lang ? 'active' : ''}`}
-              onClick={() => { setLang(l.id); setSearch(""); setActiveTopic(allTopics[0].id); setTopicsOpen(false); }}
+              onClick={() => { 
+                setLang(l.id);
+                setSearch("");
+                // Don't change activeTopic yet, let useEffect handle it
+                setTopicsOpen(false);
+              }}
               style={{ ['--topic-color']: l.color }}
             >
               <span className="tab-icon">{l.icon}</span>
@@ -1516,10 +3664,7 @@ export default function App() {
         </div>
 
         <div className="footer-nav">
-          {[
-            { id: "csharp", title: "C#", icon: "🧱", color: "#3b82f6" },
-            { id: "sql", title: "SQL", icon: "🗄️", color: "#16a34a" }
-          ].map(l => (
+          {categories.map(l => (
             <button
               key={l.id}
               onClick={() => { setLang(l.id); setSearch(""); }}
