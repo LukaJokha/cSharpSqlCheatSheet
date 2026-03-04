@@ -404,7 +404,6 @@
   .lang-tabs{ padding:8px; gap:4px; border-bottom:1px solid var(--border); flex-wrap:wrap }
   .lang-tab{ padding:6px 10px; font-size:12px; white-space:nowrap }
   .lang-tab .tab-icon{ font-size:14px }
-  .topics { display: none }
   .topics-toggle{ display:block }
   .topics-desktop{ display:none }
   .main-header{ flex-direction:column; align-items:flex-start; gap:12px }
