@@ -1438,7 +1438,7 @@ export default function App() {
           </button>
         </div>
 
-        <button className="topics-toggle" onClick={() => setTopicsOpen(!topicsOpen)}>
+        <button className={`topics-toggle ${topicsOpen ? 'open' : ''}`} onClick={() => setTopicsOpen(!topicsOpen)}>
           {topicsOpen ? '▼ ' : '▶ '} {t.topics}
         </button>
 
