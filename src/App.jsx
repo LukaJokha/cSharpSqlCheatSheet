@@ -3457,6 +3457,1507 @@ git stash`
   }
 ];
 
+const pythonOOPTopics = [
+  {
+    id: "python-oop-basics",
+    title: { en: "Python OOP Fundamentals", ka: "Python OOP საფუძვლები" },
+    sections: [
+      {
+        title: { en: "Classes & Objects - Your First Class", ka: "კლასები და ობიექტები - თქვენი პირველი კლასი" },
+        code: {
+          en: `# Define a class - like a blueprint
+class Student:
+  # Constructor - runs when creating new object
+  def __init__(self, name, grade):
+    self.name = name  # self. = instance variable
+    self.grade = grade
+
+  # Method - function inside a class
+  def greet(self):
+    return f"Hello, I'm {self.name}"
+
+  def get_grade(self):
+    return f"My grade is {self.grade}"
+
+# Create objects (instances) from the class
+student1 = Student("Alice", "A")
+student2 = Student("Bob", "B")
+
+# Access object attributes
+print(student1.name)  # Output: Alice
+
+# Call object methods
+print(student1.greet())  # Output: Hello, I'm Alice
+print(student1.get_grade())  # Output: My grade is A`,
+          ka: `# კლასის განსაზღვრა - შაბლონის მსგავსი
+class Student:
+  # კონსტრუქტორი - ეშვება ახალი ობიექტის შექმნისას
+  def __init__(self, name, grade):
+    self.name = name  # self. = ობიექტის ცვლადი
+    self.grade = grade
+
+  # მეთოდი - ფუნქცია კლასის შიგნით
+  def greet(self):
+    return f"გამარჯობა, მე ვარი {self.name}"
+
+  def get_grade(self):
+    return f"ჩემი შეფასება {self.grade}"
+
+# ობიექტები შექმნა კლასიდან
+student1 = Student("Alice", "A")
+student2 = Student("Bob", "B")
+
+# ობიექტის ატრიბუტებზე წვდომა
+print(student1.name)  # Output: Alice
+
+# მეთოდების გამოძახება
+print(student1.greet())  # Output: გამარჯობა, მე ვარი Alice
+print(student1.get_grade())  # Output: ჩემი შეფასება A`
+        }
+      },
+      {
+        title: { en: "Instance vs Class Variables", ka: "ობიექტის ცვლადი vs კლასის ცვლადი" },
+        code: {
+          en: `class Car:
+  # Class variable - shared by ALL objects
+  total_cars = 0
+
+  def __init__(self, brand, model):
+    # Instance variables - unique to each object
+    self.brand = brand
+    self.model = model
+    
+    # Increment class variable
+    Car.total_cars += 1
+
+  def info(self):
+    return f"{self.brand} {self.model}"
+
+# Create objects
+car1 = Car("Toyota", "Camry")
+car2 = Car("Honda", "Civic")
+car3 = Car("Ford", "Mustang")
+
+# Instance variables are different for each object
+print(car1.brand)  # Toyota
+print(car2.brand)  # Honda
+
+# Class variable is shared
+print(Car.total_cars)  # 3
+print(car1.total_cars)  # 3 (also accessible via instance)`,
+          ka: `class Car:
+  # კლასის ცვლადი - ყველა ობიექტს შორის საერთო
+  total_cars = 0
+
+  def __init__(self, brand, model):
+    # ობიექტის ცვლადი - თითოეული ობიექტისთვის უნიკალური
+    self.brand = brand
+    self.model = model
+    
+    # კლასის ცვლადის გაზრდა
+    Car.total_cars += 1
+
+  def info(self):
+    return f"{self.brand} {self.model}"
+
+# ობიექტის შექმნა
+car1 = Car("Toyota", "Camry")
+car2 = Car("Honda", "Civic")
+car3 = Car("Ford", "Mustang")
+
+# ობიექტის ცვლადი სხვადსხვა თითოეული ობიექტისთვის
+print(car1.brand)  # Toyota
+print(car2.brand)  # Honda
+
+# კლასის ცვლადი ყველა ერთი
+print(Car.total_cars)  # 3
+print(car1.total_cars)  # 3`
+        }
+      },
+      {
+        title: { en: "Encapsulation - Protect Your Data", ka: "ინკაპსულაცია - თქვენი მონაცემის დაცვა" },
+        code: {
+          en: `class BankAccount:
+  def __init__(self, account_holder, balance):
+    self.account_holder = account_holder
+    # Private variables - use _ prefix by convention
+    self.__balance = balance  # __ makes it harder to access
+
+  # Getter - safe way to read private data
+  def get_balance(self):
+    return self.__balance
+
+  # Setter - safe way to modify private data
+  def deposit(self, amount):
+    if amount > 0:
+      self.__balance += amount
+      print(f"Deposited {amount}")
+    else:
+      print("Amount must be positive")
+
+  def withdraw(self, amount):
+    if 0 < amount <= self.__balance:
+      self.__balance -= amount
+      print(f"Withdrew {amount}")
+    else:
+      print("Invalid amount")
+
+# Create account
+account = BankAccount("Alice", 1000)
+print(account.get_balance())  # Output: 1000
+
+# Use safe methods
+account.deposit(500)  # Output: Deposited 500
+account.withdraw(200)  # Output: Withdrew 200
+print(account.get_balance())  # Output: 1300
+
+# This prevents accidental issues
+# account.__balance = -5000  # Can't easily do this!`,
+          ka: `class BankAccount:
+  def __init__(self, account_holder, balance):
+    self.account_holder = account_holder
+    # პირადი ცვლადი - _ კონვენციით
+    self.__balance = balance  # __ უშიში წვდომა
+
+  # მიმღები - ფრთხიანი გზა პირადი მონაცემის წაკითხვა
+  def get_balance(self):
+    return self.__balance
+
+  # დამაქმე - ფრთხიანი გზა პირადი მონაცემის ცვლილება
+  def deposit(self, amount):
+    if amount > 0:
+      self.__balance += amount
+      print(f"დეპოზიტი {amount}")
+    else:
+      print("თანხა დადებითი უნდა იყოს")
+
+  def withdraw(self, amount):
+    if 0 < amount <= self.__balance:
+      self.__balance -= amount
+      print(f"გამოღებული {amount}")
+    else:
+      print("არასწორი თანხა")
+
+# ანგარიშის შექმნა
+account = BankAccount("Alice", 1000)
+print(account.get_balance())  # Output: 1000
+
+# უსაფრთხო მეთოდების გამოყენება
+account.deposit(500)  # Output: დეპოზიტი 500
+account.withdraw(200)  # Output: გამოღებული 200
+print(account.get_balance())  # Output: 1300
+
+# ეს მცდელობას აღკვეთავს
+# account.__balance = -5000  # ვერ ამას!`
+        }
+      }
+    ]
+  },
+  {
+    id: "python-oop-inheritance",
+    title: { en: "Inheritance - Reuse Code", ka: "მემკვიდრეობა - კოდის გამეორება" },
+    sections: [
+      {
+        title: { en: "Basic Inheritance", ka: "ძირითადი მემკვიდრეობა" },
+        code: {
+          en: `# Parent class (Base class)
+class Animal:
+  def __init__(self, name, age):
+    self.name = name
+    self.age = age
+
+  def eat(self):
+    return f"{self.name} is eating"
+
+  def sleep(self):
+    return f"{self.name} is sleeping"
+
+# Child class - inherits from Animal
+class Dog(Animal):
+  def __init__(self, name, age, breed):
+    super().__init__(name, age)  # Call parent constructor
+    self.breed = breed
+
+  # Override parent method
+  def eat(self):
+    return f"{self.name} is eating dog food"
+
+  # New method only in Dog
+  def bark(self):
+    return f"{self.name} says: Woof! Woof!"
+
+# Create dog object
+dog = Dog("Max", 3, "Golden Retriever")
+
+# Use inherited methods
+print(dog.sleep())  # Output: Max is sleeping
+
+# Use overridden method
+print(dog.eat())  # Output: Max is eating dog food
+
+# Use new method
+print(dog.bark())  # Output: Max says: Woof! Woof!`,
+          ka: `# მშობლის კლასი (ბაზის კლასი)
+class Animal:
+  def __init__(self, name, age):
+    self.name = name
+    self.age = age
+
+  def eat(self):
+    return f"{self.name} საჭმელი খায়"
+
+  def sleep(self):
+    return f"{self.name} სძინავს"
+
+# დიასახლის კლასი - მემკვიდრე Animal-დან
+class Dog(Animal):
+  def __init__(self, name, age, breed):
+    super().__init__(name, age)  # მშობლის კონსტრუქტორის გამოძახება
+    self.breed = breed
+
+  # მშობლის მეთოდის გადაყვანა
+  def eat(self):
+    return f"{self.name} ძაღლის საჭმელი აკეთებს"
+
+  # ახალი მეთოდი მხოლოდ Dog-ში
+  def bark(self):
+    return f"{self.name} ამბობს: აუ! აუ!"
+
+# Dog ობიექტის შექმნა
+dog = Dog("Max", 3, "Golden Retriever")
+
+# მემკვიდრე მეთოდის გამოყენება
+print(dog.sleep())  # Output: Max სძინავს
+
+# გადაფეხული მეთოდის გამოყენება
+print(dog.eat())  # Output: Max ძაղლის საჭმელი აკეთებს
+
+# ახალი მეთოდის გამოყენება
+print(dog.bark())  # Output: Max ამბობს: აუ! აუ!`
+        }
+      },
+      {
+        title: { en: "Multiple Inheritance & Method Resolution", ka: "მრავალი მემკვიდრეობა" },
+        code: {
+          en: `# Multiple inheritance example
+class Swimmer:
+  def swim(self):
+    return "Swimming..."
+
+class Runner:
+  def run(self):
+    return "Running..."
+
+class Athlete(Swimmer, Runner):
+  def __init__(self, name):
+    self.name = name
+
+  def train(self):
+    return f"{self.name} is training"
+
+# Create athlete
+athlete = Athlete("John")
+print(athlete.swim())  # Output: Swimming...
+print(athlete.run())  # Output: Running...
+print(athlete.train())  # Output: John is training
+
+# Method Resolution Order (MRO)
+print(Athlete.mro())
+# Shows order: Athlete -> Swimmer -> Runner -> object
+
+# super() follows MRO
+class Athlete2(Swimmer, Runner):
+  def move(self):
+    # Calls next method in MRO
+    result = super().swim()
+    return f"{result} (from Athlete2)"`,
+          ka: `# მრავალი მემკვიდრეობის მაგალითი
+class Swimmer:
+  def swim(self):
+    return "ცურვა..."
+
+class Runner:
+  def run(self):
+    return "სირბილი..."
+
+class Athlete(Swimmer, Runner):
+  def __init__(self, name):
+    self.name = name
+
+  def train(self):
+    return f"{self.name} ტრენინგი"
+
+# Athlete ობიექტის შექმნა
+athlete = Athlete("John")
+print(athlete.swim())  # Output: ცურვა...
+print(athlete.run())  # Output: სირბილი...
+print(athlete.train())  # Output: John ტრენინგი
+
+# Method Resolution Order (MRO)
+print(Athlete.mro())
+# აჩვენებს ბრძანებას: Athlete -> Swimmer -> Runner -> object`
+        }
+      }
+    ]
+  },
+  {
+    id: "python-oop-polymorphism",
+    title: { en: "Polymorphism - Many Forms", ka: "პოლიმორფიზმი - ბევრი ფორმა" },
+    sections: [
+      {
+        title: { en: "Method Overriding & Duck Typing", ka: "მეთოდის გადაყვანა და Duck Typing" },
+        code: {
+          en: `# Polymorphism through inheritance
+class Shape:
+  def area(self):
+    pass
+
+class Circle(Shape):
+  def __init__(self, radius):
+    self.radius = radius
+
+  def area(self):
+    return 3.14 * self.radius ** 2
+
+class Rectangle(Shape):
+  def __init__(self, width, height):
+    self.width = width
+    self.height = height
+
+  def area(self):
+    return self.width * self.height
+
+class Triangle(Shape):
+  def __init__(self, base, height):
+    self.base = base
+    self.height = height
+
+  def area(self):
+    return (self.base * self.height) / 2
+
+# Same method call, different behavior (Polymorphism!)
+shapes = [
+  Circle(5),
+  Rectangle(4, 6),
+  Triangle(3, 4)
+]
+
+for shape in shapes:
+  print(f"Area: {shape.area()}")
+  # Output:
+  # Area: 78.5
+  # Area: 24
+  # Area: 6.0
+
+# Duck Typing - if it quacks like a duck, it's a duck!
+class Dog:
+  def speak(self):
+    return "Woof!"
+
+class Cat:
+  def speak(self):
+    return "Meow!"
+
+def make_it_speak(animal):
+  print(animal.speak())
+
+make_it_speak(Dog())  # Output: Woof!
+make_it_speak(Cat())  # Output: Meow!`,
+          ka: `# პოლიმორფიზმი მემკვიდრეობით
+class Shape:
+  def area(self):
+    pass
+
+class Circle(Shape):
+  def __init__(self, radius):
+    self.radius = radius
+
+  def area(self):
+    return 3.14 * self.radius ** 2
+
+class Rectangle(Shape):
+  def __init__(self, width, height):
+    self.width = width
+    self.height = height
+
+  def area(self):
+    return self.width * self.height
+
+# იგივე მეთოდი, განსხვავებული ქცევა
+shapes = [Circle(5), Rectangle(4, 6)]
+
+for shape in shapes:
+  print(f"ფართობი: {shape.area()}")
+  # Output:
+  # ფართობი: 78.5
+  # ფართობი: 24
+
+# Duck Typing - თუ საფრ端 უხმობს, საფრend-ია!
+class Dog:
+  def speak(self):
+    return "აუ!"
+
+class Cat:
+  def speak(self):
+    return "მიაოუ!"
+
+def make_it_speak(animal):
+  print(animal.speak())
+
+make_it_speak(Dog())  # Output: აუ!
+make_it_speak(Cat())  # Output: მიაოუ!`
+        }
+      },
+      {
+        title: { en: "Abstract Base Classes", ka: "აბსტრაქტული ბაზის კლასი" },
+        code: {
+          en: `from abc import ABC, abstractmethod
+
+# Abstract base class - cannot be instantiated
+class Vehicle(ABC):
+  @abstractmethod
+  def start(self):
+    pass  # Must be overridden
+
+  @abstractmethod
+  def stop(self):
+    pass
+
+  def honk(self):
+    return "Beep! Beep!"
+
+# Car must implement abstract methods
+class Car(Vehicle):
+  def start(self):
+    return "Car engine started"
+
+  def stop(self):
+    return "Car stopped"
+
+class Motorcycle(Vehicle):
+  def start(self):
+    return "Motorcycle engine started"
+
+  def stop(self):
+    return "Motorcycle stopped"
+
+# Cannot do this - Vehicle is abstract
+# v = Vehicle()  # TypeError!
+
+# But this works
+car = Car()
+print(car.start())  # Output: Car engine started
+print(car.honk())  # Output: Beep! Beep!
+
+motorcycle = Motorcycle()
+print(motorcycle.start())  # Output: Motorcycle engine started`,
+          ka: `from abc import ABC, abstractmethod
+
+# აბსტრაქტული ბაზის კლასი - ვერ შეიქმნება
+class Vehicle(ABC):
+  @abstractmethod
+  def start(self):
+    pass  # უნდა გადაიფეხოს
+
+  @abstractmethod
+  def stop(self):
+    pass
+
+  def honk(self):
+    return "Beep! Beep!"
+
+# Car აბსტრაქტული მეთოდების დანერგვა
+class Car(Vehicle):
+  def start(self):
+    return "Car ძრავა დაიშო"
+
+  def stop(self):
+    return "Car შეჩერდა"
+
+# ვერ გააკეთებთ - Vehicle აბსტრაქტული
+# v = Vehicle()  # TypeError!
+
+# მაგრამ ეს მუშაობს
+car = Car()
+print(car.start())  # Output: Car ძრავა დაიშო
+print(car.honk())  # Output: Beep! Beep!`
+        }
+      }
+    ]
+  },
+  {
+    id: "python-oop-advanced",
+    title: { en: "Advanced OOP Concepts", ka: "მოწინავე OOP კონცეფციები" },
+    sections: [
+      {
+        title: { en: "Properties, Static & Class Methods", ka: "თვისებები, სტატიკური და კლასის მეთოდი" },
+        code: {
+          en: `class Student:
+  school_name = "Tech Academy"  # class variable
+
+  def __init__(self, name, score):
+    self.name = name
+    self._score = score  # private variable
+
+  # Property - access like attribute, but runs method
+  @property
+  def score(self):
+    return self._score
+
+  @score.setter
+  def score(self, value):
+    if 0 <= value <= 100:
+      self._score = value
+    else:
+      print("Invalid score!")
+
+  @property
+  def grade(self):
+    if self._score >= 90: return "A"
+    if self._score >= 80: return "B"
+    if self._score >= 70: return "C"
+    return "F"
+
+  # Static method - doesn't use self
+  @staticmethod
+  def is_passing(score):
+    return score >= 60
+
+  # Class method - uses class variables
+  @classmethod
+  def from_string(cls, student_string):
+    # "Alice:85" -> Student object
+    name, score = student_string.split(':')
+    return cls(name, int(score))
+
+# Using properties
+student = Student("Alice", 85)
+print(student.score)  # Output: 85 (looks like attribute)
+print(student.grade)  # Output: B
+
+# Using static method
+print(Student.is_passing(75))  # Output: True
+print(Student.is_passing(45))  # Output: False
+
+# Using class method
+student2 = Student.from_string("Bob:92")
+print(student2.name)  # Output: Bob
+print(student2.grade)  # Output: A`,
+          ka: `class Student:
+  school_name = "Tech Academy"  # კლასის ცვლადი
+
+  def __init__(self, name, score):
+    self.name = name
+    self._score = score  # პირადი ცვლადი
+
+  # Property - ატრიბუტის სახით წვდომა, მაგრამ მეთოდი აწარმოებს
+  @property
+  def score(self):
+    return self._score
+
+  @score.setter
+  def score(self, value):
+    if 0 <= value <= 100:
+      self._score = value
+    else:
+      print("არასწორი ქულა!")
+
+  @property
+  def grade(self):
+    if self._score >= 90: return "A"
+    if self._score >= 80: return "B"
+    if self._score >= 70: return "C"
+    return "F"
+
+  # სტატიკური მეთოდი - self გამოიყენებს არ აკეთებს
+  @staticmethod
+  def is_passing(score):
+    return score >= 60
+
+  # კლასის მეთოდი - კლასის ცვლადი გამოიყენებს
+  @classmethod
+  def from_string(cls, student_string):
+    # "Alice:85" -> Student ობიექტი
+    name, score = student_string.split(':')
+    return cls(name, int(score))
+
+# Properties გამოყენება
+student = Student("Alice", 85)
+print(student.score)  # Output: 85
+print(student.grade)  # Output: B
+
+# სტატიკური მეთოდი
+print(Student.is_passing(75))  # Output: True
+
+# კლასის მეთოდი
+student2 = Student.from_string("Bob:92")
+print(student2.name)  # Output: Bob
+print(student2.grade)  # Output: A`
+        }
+      },
+      {
+        title: { en: "Magic Methods (__init__, __str__, etc)", ka: "მაგიური მეთოდი (__init__, __str__, და.)" },
+        code: {
+          en: `class Book:
+  def __init__(self, title, author, pages):
+    self.title = title
+    self.author = author
+    self.pages = pages
+
+  # __str__ - readable string representation
+  def __str__(self):
+    return f"'{self.title}' by {self.author}"
+
+  # __repr__ - developer-friendly representation
+  def __repr__(self):
+    return f"Book({self.title!r}, {self.author!r}, {self.pages})"
+
+  # __len__ - allows len(book)
+  def __len__(self):
+    return self.pages
+
+  # __eq__ - allows ==
+  def __eq__(self, other):
+    return (self.title == other.title and 
+            self.author == other.author)
+
+  # __lt__ - allows < comparison
+  def __lt__(self, other):
+    return self.pages < other.pages
+
+  # __add__ - allows + operator
+  def __add__(self, other):
+    return self.pages + other.pages
+
+# Using magic methods
+book1 = Book("Python 101", "John Doe", 300)
+book2 = Book("Web Dev", "Jane Smith", 250)
+
+print(str(book1))  # Output: 'Python 101' by John Doe
+print(repr(book1))  # Output: Book('Python 101', 'John Doe', 300)
+
+print(len(book1))  # Output: 300
+
+print(book1 == book2)  # Output: False
+print(book1 < book2)  # Output: False (300 < 250 is False)
+print(book1 + book2)  # Output: 550 (total pages)
+
+# Sorting by pages
+books = [book1, book2]
+books.sort()
+print(books[0].title)  # Output: Web Dev (250 pages)`,
+          ka: `class Book:
+  def __init__(self, title, author, pages):
+    self.title = title
+    self.author = author
+    self.pages = pages
+
+  # __str__ - წაკითხვადი სტრიქონი
+  def __str__(self):
+    return f"'{self.title}' by {self.author}"
+
+  # __repr__ - დეველოპერის განკითხვადი
+  def __repr__(self):
+    return f"Book({self.title!r}, {self.author!r}, {self.pages})"
+
+  # __len__ - ნებართვა len(book)
+  def __len__(self):
+    return self.pages
+
+  # __eq__ - ნებართვა ==
+  def __eq__(self, other):
+    return (self.title == other.title and 
+            self.author == other.author)
+
+  # __lt__ - ნებართვა < შედარება
+  def __lt__(self, other):
+    return self.pages < other.pages
+
+  # __add__ - ნებართვა + ოპერატორი
+  def __add__(self, other):
+    return self.pages + other.pages
+
+# მაგიური მეთოდი გამოყენება
+book1 = Book("Python 101", "John Doe", 300)
+book2 = Book("Web Dev", "Jane Smith", 250)
+
+print(str(book1))  # Output: 'Python 101' by John Doe
+print(len(book1))  # Output: 300
+
+print(book1 == book2)  # Output: False
+print(book1 < book2)  # Output: False
+print(book1 + book2)  # Output: 550 (მოცულობის გვერდი)`
+        }
+      }
+    ]
+  },
+  {
+    id: "python-oop-composition",
+    title: { en: "Composition & Aggregation", ka: "კომპოზიცია და აგრეგაცია" },
+    sections: [
+      {
+        title: { en: "Has-a Relationship (Composition)", ka: "აქვს-ა ურთიერთობა (კომპოზიცია)" },
+        code: {
+          en: `# Composition: a strong "has-a" relationship
+# When parent is deleted, children are too
+
+class Engine:
+  def __init__(self, type, horsepower):
+    self.type = type
+    self.horsepower = horsepower
+
+  def start(self):
+    return f"{self.type} engine started ({self.horsepower} HP)"
+
+class Car:
+  def __init__(self, brand, model):
+    self.brand = brand
+    self.model = model
+    # Car HAS-A Engine (composition)
+    self.engine = Engine("V8", 350)
+
+  def drive(self):
+    return f"{self.brand} {self.model} is driving"
+
+# Aggregation: a weaker "has-a" relationship
+# Parts can exist independently
+
+class Company:
+  def __init__(self, name):
+    self.name = name
+    self.employees = []  # empty list
+
+  def hire(self, employee):
+    self.employees.append(employee)
+
+class Employee:
+  def __init__(self, name):
+    self.name = name
+
+# Create entities
+company = Company("Tech Corp")
+emp1 = Employee("Alice")
+emp2 = Employee("Bob")
+
+# Company HAS employees (aggregation)
+company.hire(emp1)
+company.hire(emp2)
+
+print(company.name)  # Tech Corp
+print([e.name for e in company.employees])
+# Output: ['Alice', 'Bob']
+
+# Even if company is deleted, employees still exist
+del company
+print(emp1.name)  # Alice - still exists!`,
+          ka: `# კომპოზიცია: ძლიერი "აქვს-ა" ურთიერთობა
+# როდესაც მშობელი წაიშლება, ბავშვებიც წაიშლება
+
+class Engine:
+  def __init__(self, type, horsepower):
+    self.type = type
+    self.horsepower = horsepower
+
+  def start(self):
+    return f"{self.type} ძრავა დაიშო ({self.horsepower} HP)"
+
+class Car:
+  def __init__(self, brand, model):
+    self.brand = brand
+    self.model = model
+    # Car აქვს Engine (კომპოზიცია)
+    self.engine = Engine("V8", 350)
+
+  def drive(self):
+    return f"{self.brand} {self.model} მართავს"
+
+# აგრეგაცია: საბუ "აქვს-ა" ურთიერთობა
+# ნაწილი დამოუკიდებელი დაკვებ
+
+class Company:
+  def __init__(self, name):
+    self.name = name
+    self.employees = []
+
+  def hire(self, employee):
+    self.employees.append(employee)
+
+class Employee:
+  def __init__(self, name):
+    self.name = name
+
+# მეწამე
+company = Company("Tech Corp")
+emp1 = Employee("Alice")
+emp2 = Employee("Bob")
+
+# Company აქვს თანამშრომელი (აგრეგაცია)
+company.hire(emp1)
+company.hire(emp2)
+
+print(company.name)  # Tech Corp
+print([e.name for e in company.employees])
+# Output: ['Alice', 'Bob']
+
+# თუნდაც company წაიშლება, თანამშრომელი ბრუნდება
+del company
+print(emp1.name)  # Alice - ჯერ სჭირს!`
+        }
+      }
+    ]
+  },
+  {
+    id: "python-oop-practical",
+    title: { en: "Practical Example: E-Shop System", ka: "პრაქტიკული მაგალითი: E-Shop სისტემა" },
+    sections: [
+      {
+        title: { en: "Complete Real-World Example", ka: "სრული რეალური მაგალითი" },
+        code: {
+          en: `from datetime import datetime
+
+# Product class - represents items in shop
+class Product:
+  def __init__(self, product_id, name, price, stock):
+    self.product_id = product_id
+    self.name = name
+    self.price = price
+    self.stock = stock
+
+  def __str__(self):
+    return f"{self.name} - \${self.price}"
+
+# ShoppingCart class - holds products
+class ShoppingCart:
+  def __init__(self):
+    self.items = []
+
+  def add_item(self, product, quantity):
+    if product.stock >= quantity:
+      self.items.append({'product': product, 'quantity': quantity})
+      product.stock -= quantity
+      print(f"Added {quantity} {product.name}(s)")
+    else:
+      print(f"Not enough stock. Available: {product.stock}")
+
+  def get_total(self):
+    return sum(item['product'].price * item['quantity'] 
+              for item in self.items)
+
+  def __str__(self):
+    if not self.items:
+      return "Cart is empty"
+    return "\\n".join([f"{item['product'].name} x{item['quantity']} = \${item['product'].price * item['quantity']}" 
+                      for item in self.items])
+
+# Order class - finalizes purchase
+class Order:
+  def __init__(self, order_id, cart, customer_name):
+    self.order_id = order_id
+    self.items = cart.items
+    self.customer_name = customer_name
+    self.total = cart.get_total()
+    self.date = datetime.now()
+    self.status = "Pending"
+
+  def confirm(self):
+    self.status = "Confirmed"
+    print(f"Order {self.order_id} confirmed!")
+
+  def __str__(self):
+    return f"Order #{self.order_id} - {self.customer_name} - \${self.total}"
+
+# Usage
+laptop = Product(1, "Laptop", 1200, 5)
+mouse = Product(2, "Mouse", 30, 20)
+keyboard = Product(3, "Keyboard", 80, 15)
+
+cart = ShoppingCart()
+cart.add_item(laptop, 1)
+cart.add_item(mouse, 2)
+cart.add_item(keyboard, 1)
+
+print("\\nCart Contents:")
+print(cart)
+print(f"Total: \${cart.get_total()}")
+
+order = Order(101, cart, "Alice")
+print(f"\\n{order}")
+order.confirm()`,
+          ka: `from datetime import datetime
+
+# Product კლასი - მაღაზიის ნივთი
+class Product:
+  def __init__(self, product_id, name, price, stock):
+    self.product_id = product_id
+    self.name = name
+    self.price = price
+    self.stock = stock
+
+  def __str__(self):
+    return f"{self.name} - \${self.price}"
+
+# ShoppingCart კლასი - პროდუქტებს უჯდება
+class ShoppingCart:
+  def __init__(self):
+    self.items = []
+
+  def add_item(self, product, quantity):
+    if product.stock >= quantity:
+      self.items.append({'product': product, 'quantity': quantity})
+      product.stock -= quantity
+      print(f"დამატებული {quantity} {product.name}(s)")
+    else:
+      print(f"მისაწვდომელი: {product.stock}")
+
+  def get_total(self):
+    return sum(item['product'].price * item['quantity'] 
+              for item in self.items)
+
+  def __str__(self):
+    if not self.items:
+      return "კალათი ცარიელია"
+    return "\\n".join([f"{item['product'].name} x{item['quantity']} = \${item['product'].price * item['quantity']}" 
+                      for item in self.items])
+
+# Order კლასი - შიდა შენახვა
+class Order:
+  def __init__(self, order_id, cart, customer_name):
+    self.order_id = order_id
+    self.items = cart.items
+    self.customer_name = customer_name
+    self.total = cart.get_total()
+    self.date = datetime.now()
+    self.status = "Pending"
+
+  def confirm(self):
+    self.status = "Confirmed"
+    print(f"მიზანი {self.order_id} დამტკიცდა!")
+
+  def __str__(self):
+    return f"შეკვეთა #{self.order_id} - {self.customer_name} - \${self.total}"
+
+# კოდი
+laptop = Product(1, "Laptop", 1200, 5)
+mouse = Product(2, "Mouse", 30, 20)
+
+cart = ShoppingCart()
+cart.add_item(laptop, 1)
+cart.add_item(mouse, 2)
+
+print("კალათი:")
+print(cart)
+print(f"სულ: \${cart.get_total()}")
+
+order = Order(101, cart, "Alice")
+print(f"\\n{order}")
+order.confirm()`
+        }
+      }
+    ]
+  }
+];
+
+const cybersecurityTopics = [
+  {
+    id: "cybersec-fundamentals",
+    title: { en: "Cybersecurity Fundamentals", ka: "კიბერუსაფრთხოების საფუძვლები" },
+    sections: [
+      {
+        title: { en: "Encryption & Hashing Basics", ka: "შიფრაცია და ჰეშირება" },
+        code: {
+          en: `import hashlib
+from cryptography.fernet import Fernet
+
+# === HASHING (One-way) ===
+# Hashing converts data to fixed-length string, cannot be reversed
+
+# SHA256 Hash
+def create_password_hash(password):
+  return hashlib.sha256(password.encode()).hexdigest()
+
+password = "MySecurePassword123!"
+hashed = create_password_hash(password)
+print(f"Original: {password}")
+print(f"Hashed: {hashed}")
+
+# Verify password
+def verify_password(password, hashed):
+  return hashlib.sha256(password.encode()).hexdigest() == hashed
+
+is_correct = verify_password("MySecurePassword123!", hashed)
+print(f"Password matches: {is_correct}")  # True
+
+# === ENCRYPTION (Two-way) ===
+# Encryption can be reversed with a key
+
+# Generate encryption key
+key = Fernet.generate_key()
+cipher = Fernet(key)
+
+# Encrypt data
+secret_message = "My confidential data"
+encrypted = cipher.encrypt(secret_message.encode())
+print(f"Encrypted: {encrypted}")
+
+# Decrypt data
+decrypted = cipher.decrypt(encrypted).decode()
+print(f"Decrypted: {decrypted}")`,
+          ka: `import hashlib
+from cryptography.fernet import Fernet
+
+# === ჰეშირება (ერთმხრივი) ===
+# მონაცემი ფიქსირებული სიმბოლოთი, უკან არ შეიძლება
+
+# SHA256 ჰეში
+def create_password_hash(password):
+  return hashlib.sha256(password.encode()).hexdigest()
+
+password = "MySecurePassword123!"
+hashed = create_password_hash(password)
+
+# პაროლი დაკონფირმება
+def verify_password(password, hashed):
+  return hashlib.sha256(password.encode()).hexdigest() == hashed
+
+is_correct = verify_password("MySecurePassword123!", hashed)
+print(f"პაროლი ემთხვევა: {is_correct}")  # True
+
+# === შიფრაცია (ორმხრივი) ===
+# შიფრაცია კოდი უკან შეიძლება
+
+# שיפור encryption კოდი
+key = Fernet.generate_key()
+cipher = Fernet(key)
+
+# მონაცემი დაშიფვრა
+secret_message = "My confidential data"
+encrypted = cipher.encrypt(secret_message.encode())
+
+# მონაცემი გაშიფვრა
+decrypted = cipher.decrypt(encrypted).decode()`
+        }
+      },
+      {
+        title: { en: "SQL Injection Prevention", ka: "SQL Injection თავიდან აცილება" },
+        code: {
+          en: `import sqlite3
+from sqlite3 import Error
+
+# === BAD: Vulnerable to SQL Injection ===
+def vulnerable_login(username, password):
+  conn = sqlite3.connect('users.db')
+  cursor = conn.cursor()
+  
+  # DANGEROUS - attacker can manipulate query!
+  query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+  # If username = "admin' --" it bypasses password check!
+  cursor.execute(query)
+  return cursor.fetchone()
+
+# === GOOD: Use parameterized queries ===
+def secure_login(username, password):
+  conn = sqlite3.connect('users.db')
+  cursor = conn.cursor()
+  
+  # Use ? placeholders - prevents injection
+  query = "SELECT * FROM users WHERE username=? AND password=?"
+  cursor.execute(query, (username, password))
+  return cursor.fetchone()
+
+# === GOOD: Hash passwords ===
+import hashlib
+
+def secure_login_with_hash(username, password_input):
+  conn = sqlite3.connect('users.db')
+  cursor = conn.cursor()
+  
+  query = "SELECT password_hash FROM users WHERE username=?"
+  cursor.execute(query, (username,))
+  user = cursor.fetchone()
+  
+  if user:
+    stored_hash = user[0]
+    # Verify hashed password
+    input_hash = hashlib.sha256(password_input.encode()).hexdigest()
+    return stored_hash == input_hash
+  return False`,
+          ka: `import sqlite3
+from sqlite3 import Error
+
+# === ცუდი: SQL Injection დაუცველი ===
+def vulnerable_login(username, password):
+  conn = sqlite3.connect('users.db')
+  cursor = conn.cursor()
+  
+  # საშიში - თავდამსხმელი შეთხზოვნის მანიპულირება შეუძლია!
+  query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+  cursor.execute(query)
+  return cursor.fetchone()
+
+# === კარგი: პარამეტრიზებული კითხვა ===
+def secure_login(username, password):
+  conn = sqlite3.connect('users.db')
+  cursor = conn.cursor()
+  
+  # გამოიყენეთ ? ადგილი - თავიდან აიცილებს injection
+  query = "SELECT * FROM users WHERE username=? AND password=?"
+  cursor.execute(query, (username, password))
+  return cursor.fetchone()
+
+# === კარგი: ჰეშ პაროლი ===
+import hashlib
+
+def secure_login_with_hash(username, password_input):
+  conn = sqlite3.connect('users.db')
+  cursor = conn.cursor()
+  
+  query = "SELECT password_hash FROM users WHERE username=?"
+  cursor.execute(query, (username,))
+  user = cursor.fetchone()
+  
+  if user:
+    stored_hash = user[0]
+    input_hash = hashlib.sha256(password_input.encode()).hexdigest()
+    return stored_hash == input_hash
+  return False`
+        }
+      }
+    ]
+  },
+  {
+    id: "cybersec-applications",
+    title: { en: "Cybersecurity Applications", ka: "კიბერუსაფრთხოების აპლიკაციები" },
+    sections: [
+      {
+        title: { en: "Password Manager App", ka: "პაროლის მენეჯერი" },
+        code: {
+          en: `import json
+import hashlib
+from cryptography.fernet import Fernet
+import os
+
+class PasswordManager:
+  def __init__(self, master_password):
+    self.master_hash = hashlib.sha256(master_password.encode()).hexdigest()
+    self.key = Fernet.generate_key()
+    self.cipher = Fernet(self.key)
+    self.passwords = {}
+
+  def add_password(self, service, username, password):
+    """Store password encrypted"""
+    encrypted = self.cipher.encrypt(password.encode()).decode()
+    self.passwords[service] = {
+      'username': username,
+      'password': encrypted
+    }
+    print(f"Password for {service} saved!")
+
+  def get_password(self, service):
+    """Retrieve and decrypt password"""
+    if service in self.passwords:
+      encrypted_pwd = self.passwords[service]['password']
+      decrypted = self.cipher.decrypt(encrypted_pwd.encode()).decode()
+      return self.passwords[service]['username'], decrypted
+    return None
+
+  def save_to_file(self, filename):
+    """Save encrypted passwords to file"""
+    data = {
+      'master_hash': self.master_hash,
+      'key': self.key.decode(),
+      'passwords': self.passwords
+    }
+    with open(filename, 'w') as f:
+      json.dump(data, f)
+
+  def list_services(self):
+    """List all stored services"""
+    return list(self.passwords.keys())
+
+# Usage
+manager = PasswordManager("MyMasterPassword123!")
+manager.add_password("gmail", "alice@gmail.com", "Gmail$ecure123")
+manager.add_password("github", "alice_dev", "GitHub@Pass456")
+
+print("Services:", manager.list_services())
+username, password = manager.get_password("gmail")
+print(f"Gmail: {username} / {password}")
+
+manager.save_to_file("passwords.json")`,
+          ka: `import json
+import hashlib
+from cryptography.fernet import Fernet
+
+class PasswordManager:
+  def __init__(self, master_password):
+    self.master_hash = hashlib.sha256(master_password.encode()).hexdigest()
+    self.key = Fernet.generate_key()
+    self.cipher = Fernet(self.key)
+    self.passwords = {}
+
+  def add_password(self, service, username, password):
+    """პაროლი დაშიფვრული შენახვა"""
+    encrypted = self.cipher.encrypt(password.encode()).decode()
+    self.passwords[service] = {
+      'username': username,
+      'password': encrypted
+    }
+    print(f"{service} პაროლი შენახულია!")
+
+  def get_password(self, service):
+    """პაროლი წაკითხვა და გაშიფვრა"""
+    if service in self.passwords:
+      encrypted_pwd = self.passwords[service]['password']
+      decrypted = self.cipher.decrypt(encrypted_pwd.encode()).decode()
+      return self.passwords[service]['username'], decrypted
+    return None
+
+  def list_services(self):
+    """ყველა სერვისის სია"""
+    return list(self.passwords.keys())
+
+# კოდი
+manager = PasswordManager("MyMasterPassword123!")
+manager.add_password("gmail", "alice@gmail.com", "Gmail$ecure123")
+
+print("სერვისები:", manager.list_services())
+username, password = manager.get_password("gmail")
+print(f"Gmail: {username}")`
+        }
+      },
+      {
+        title: { en: "Network Security Scanner", ka: "ქსელის უსაფრთხოების სკანერი" },
+        code: {
+          en: `import socket
+import subprocess
+import platform
+
+class NetworkSecurityScanner:
+  def __init__(self, target_host):
+    self.target = target_host
+
+  def scan_open_ports(self, start_port=1, end_port=1024):
+    """Scan for open ports"""
+    open_ports = []
+    print(f"Scanning {self.target}...")
+    
+    for port in range(start_port, end_port + 1):
+      try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(0.5)
+        result = sock.connect_ex((self.target, port))
+        
+        if result == 0:
+          open_ports.append(port)
+          print(f"Port {port}: OPEN")
+        sock.close()
+      except:
+        pass
+    
+    return open_ports
+
+  def check_dns(self):
+    """Resolve DNS"""
+    try:
+      ip = socket.gethostbyname(self.target)
+      print(f"DNS: {self.target} -> {ip}")
+      return ip
+    except:
+      print("DNS resolution failed")
+      return None
+
+  def ping_host(self):
+    """Check if host is reachable"""
+    param = "-n" if platform.system().lower() == "windows" else "-c"
+    command = ["ping", param, "1", self.target]
+    
+    try:
+      response = subprocess.run(command, capture_output=True, timeout=2)
+      return response.returncode == 0
+    except:
+      return False
+
+# Usage
+scanner = NetworkSecurityScanner("8.8.8.8")
+is_alive = scanner.ping_host()
+print(f"Host reachable: {is_alive}")
+
+ip = scanner.check_dns()
+open_ports = scanner.scan_open_ports(1, 100)
+print(f"Found {len(open_ports)} open ports")`,
+          ka: `import socket
+import platform
+
+class NetworkSecurityScanner:
+  def __init__(self, target_host):
+    self.target = target_host
+
+  def scan_open_ports(self, start_port=1, end_port=1024):
+    """ღია პორტების სკანირება"""
+    open_ports = []
+    print(f"სკანირება {self.target}...")
+    
+    for port in range(start_port, end_port + 1):
+      try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(0.5)
+        result = sock.connect_ex((self.target, port))
+        
+        if result == 0:
+          open_ports.append(port)
+          print(f"პორტი {port}: ღია")
+        sock.close()
+      except:
+        pass
+    
+    return open_ports
+
+  def check_dns(self):
+    """DNS გადეწერა"""
+    try:
+      ip = socket.gethostbyname(self.target)
+      print(f"DNS: {self.target} -> {ip}")
+      return ip
+    except:
+      print("DNS რამ უარი")
+      return None
+
+# კოდი
+scanner = NetworkSecurityScanner("8.8.8.8")
+ip = scanner.check_dns()
+open_ports = scanner.scan_open_ports(1, 100)
+print(f"ნაპოვნი {len(open_ports)} ღია პორტი")`
+        }
+      },
+      {
+        title: { en: "File Integrity Checker", ka: "ფაილის მთლიანობის შემოწმება" },
+        code: {
+          en: `import hashlib
+import os
+import json
+from datetime import datetime
+
+class FileIntegrityChecker:
+  def __init__(self):
+    self.checksums = {}
+
+  def calculate_hash(self, filepath):
+    """Calculate SHA256 hash of file"""
+    sha256_hash = hashlib.sha256()
+    
+    with open(filepath, "rb") as f:
+      for byte_block in iter(lambda: f.read(4096), b""):
+        sha256_hash.update(byte_block)
+    
+    return sha256_hash.hexdigest()
+
+  def create_baseline(self, directory):
+    """Create baseline hashes for all files"""
+    print(f"Creating baseline for {directory}...")
+    
+    for filename in os.listdir(directory):
+      filepath = os.path.join(directory, filename)
+      if os.path.isfile(filepath):
+        file_hash = self.calculate_hash(filepath)
+        self.checksums[filename] = {
+          'hash': file_hash,
+          'date': datetime.now().isoformat()
+        }
+        print(f"Hashed: {filename}")
+
+  def check_integrity(self, directory):
+    """Check if files have been modified"""
+    print(f"Checking integrity of {directory}...")
+    modified = []
+    
+    for filename in os.listdir(directory):
+      filepath = os.path.join(directory, filename)
+      if os.path.isfile(filepath) and filename in self.checksums:
+        current_hash = self.calculate_hash(filepath)
+        original_hash = self.checksums[filename]['hash']
+        
+        if current_hash != original_hash:
+          modified.append(filename)
+          print(f"⚠️  MODIFIED: {filename}")
+        else:
+          print(f"✓ OK: {filename}")
+    
+    return modified
+
+  def save_baseline(self, filename):
+    """Save baseline to file"""
+    with open(filename, 'w') as f:
+      json.dump(self.checksums, f, indent=2)
+
+# Usage
+checker = FileIntegrityChecker()
+checker.create_baseline("./docs")
+modified = checker.check_integrity("./docs")
+
+if modified:
+  print(f"⚠️  {len(modified)} files were modified!")
+else:
+  print("✓ All files intact")
+
+checker.save_baseline("baseline.json")`,
+          ka: `import hashlib
+import os
+import json
+
+class FileIntegrityChecker:
+  def __init__(self):
+    self.checksums = {}
+
+  def calculate_hash(self, filepath):
+    """ფაილის SHA256 ჰეში"""
+    sha256_hash = hashlib.sha256()
+    
+    with open(filepath, "rb") as f:
+      for byte_block in iter(lambda: f.read(4096), b""):
+        sha256_hash.update(byte_block)
+    
+    return sha256_hash.hexdigest()
+
+  def create_baseline(self, directory):
+    """ყველა ფაილის საბაზო ჰეში"""
+    print(f"საბაზო შექმნა {directory}...")
+    
+    for filename in os.listdir(directory):
+      filepath = os.path.join(directory, filename)
+      if os.path.isfile(filepath):
+        file_hash = self.calculate_hash(filepath)
+        self.checksums[filename] = file_hash
+        print(f"ჰეშირებული: {filename}")
+
+  def check_integrity(self, directory):
+    """დაკვირვება თუ ფაილი შეცვლილია"""
+    print(f"მთლიანობის შემოწმება {directory}...")
+    modified = []
+    
+    for filename in os.listdir(directory):
+      filepath = os.path.join(directory, filename)
+      if os.path.isfile(filepath) and filename in self.checksums:
+        current_hash = self.calculate_hash(filepath)
+        original_hash = self.checksums[filename]
+        
+        if current_hash != original_hash:
+          modified.append(filename)
+          print(f"⚠️ შეცვლილი: {filename}")
+        else:
+          print(f"✓ კარგი: {filename}")
+    
+    return modified
+
+# კოდი
+checker = FileIntegrityChecker()
+checker.create_baseline("./docs")
+modified = checker.check_integrity("./docs")`
+        }
+      }
+    ]
+  }
+];
+
 const translations = {
   en: {
     appTitle: "Zero → Hero",
@@ -3507,6 +5008,8 @@ export default function App() {
 
   const categories = [
     { id: "csharp", title: "C#", icon: "🧱", color: "#3b82f6" },
+    { id: "python", title: "Python OOP", icon: "🐍", color: "#3776ab" },
+    { id: "cybersec", title: "Cybersecurity", icon: "🔐", color: "#dc2626" },
     { id: "sql", title: "SQL", icon: "🗄️", color: "#16a34a" },
     { id: "web", title: "Web", icon: "🌐", color: "#f59e0b" },
     { id: "projects", title: "Projects", icon: "📦", color: "#8b5cf6" }
@@ -3515,6 +5018,8 @@ export default function App() {
   const getTopics = () => {
     switch(lang) {
       case "csharp": return csharpTopics;
+      case "python": return pythonOOPTopics;
+      case "cybersec": return cybersecurityTopics;
       case "sql": return sqlTopics;
       case "web": return webTopics;
       case "projects": return projectTopics;
